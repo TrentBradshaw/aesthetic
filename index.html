@@ -16,8 +16,10 @@
     <H1>AESTHETIC</H1>
 </header>
 <body>
+    
         <div class = 'container'>
-            <input id = 'txtEmail' type 'email' placeholder='Email'>
+            <input id = 'username' type='username' placeholder="username">
+            <input id = 'txtEmail' type='email' placeholder='Email'>
 
             <input id = 'txtPassword' type="password" placeholder='password'>
 
@@ -25,23 +27,31 @@
                 Log In
             </button>
 
-            <button id = 'btnSignUp' class = 'btn btn-secondary'>
+            <button id = 'btnSignUp'class = 'btn btn-secondary'>
                 Sign Up
             </button>
 
             <button id = 'btnLogout' class = 'btn btn-action hide'>
                 Log Out
             </button>
-
+        
         </div>
 
 
 
-
-
-
-
-
+<script>
+               var config = {
+    apiKey: "AIzaSyCjZZJ2rNAzKgkZ9ioE0UeufR3W3RSDN1Y",
+    authDomain: "walrusaesthetic.firebaseapp.com",
+    databaseURL: "https://walrusaesthetic.firebaseio.com",
+    projectId: "walrusaesthetic",
+    storageBucket: "walrusaesthetic.appspot.com",
+    messagingSenderId: "264200815299"
+  };
+firebase.initializeApp(config);
+const db = firebase.firestore();
+db.settings({ timestampsInSnapshots: true }); 
+</script>
 
 
 

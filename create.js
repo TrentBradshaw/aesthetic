@@ -1,3 +1,9 @@
+const createProject = document.getElementById('createProject');
+
+createProject.addEventListener('click', function(e) {
+    window.location.href = ('http://127.0.0.1:8080/aesthetic.html')
+});
+
 [].forEach.call(document.getElementsByClassName('tags-input'), function (el) {
     let hiddenInput = document.createElement('input'),
         mainInput = document.createElement('input'),
@@ -74,3 +80,5 @@
         return tag.replace(/[^\w -]/g, '').trim().replace(/\W+/g, '-');
     }
 });
+
+var projectDbRef = db.collection('projects').doc.
