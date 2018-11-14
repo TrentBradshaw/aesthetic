@@ -36,7 +36,7 @@ createProject.addEventListener('click', function(e) {
     el.appendChild(mainInput);
     el.appendChild(hiddenInput);
 
-    addTag('hello!');
+    
 
     function addTag (text) {
         let tag = {
@@ -81,4 +81,4 @@ createProject.addEventListener('click', function(e) {
     }
 });
 
-var projectDbRef = db.collection('projects').doc.
+//var projectDbRef = db.collection('projects').doc.

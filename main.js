@@ -14,15 +14,13 @@ const btnSignUp = document.getElementById('btnSignUp');
 const btnLogout = document.getElementById('btnLogout');
 const user = firebase.auth().currentUser;
 const submit = document.getElementById('btnSignUp');
-const username = document.getElementById('username')
-
+const username = document.getElementById('username');
+console.log(username);
 
 const email = txtEmail.value;
 const pass = txtPassword.value;
 const auth = firebase.auth();
-console.log(typeof(email));
 
-console.log(email)
 
 
 // add login event
@@ -42,11 +40,26 @@ btnSignUp.addEventListener('click', e => {
 const email = txtEmail.value;
 const pass = txtPassword.value;
 const auth = firebase.auth();
-const displayName = username.value;
-console.log(displayName);
 
-//Sign in
-const promise = auth.createUserWithEmailAndPassword(email,pass);
+
+
+
+//Sign up
+const promise = auth.createUserWithEmailAndPassword(email,pass).then(
+  (firebaseUser)=>{
+ // here you can use either the returned user object or       firebase.auth().currentUser. I will use the returned user object
+    if(firebaseUser){
+       firebaseUser.updateProfile({
+       displayName: displayName,
+         
+      })
+    }
+}).catch(function(error) {
+  // Handle Errors here.
+  //var errorCode = error.code;
+  //var errorMessage = error.message;
+  // ...
+});
 promise.catch(e => console.log(e.message));
 });
 
@@ -59,8 +72,8 @@ window.location.href = ('http://127.0.0.1:8080')
 // add a realtime listener
 firebase.auth().onAuthStateChanged(firebaseUser => {
 if(firebaseUser) {
-const cornName = displayName;
-
+const displayName = username.value;
+console.log(displayName);
 console.log(firebaseUser.uid);
 btnLogout.classList.remove('hide');
 db.collection('users').add({
@@ -68,17 +81,12 @@ db.collection('users').add({
   email: firebaseUser.email,
   page: "paeege",
   userID: firebaseUser.uid,
-  username: cornName,
+  username: displayName,
   
 });
-submit.addEventListener('click', (e) => {
-  
 
 
-
-    
-  });
-//window.location.href = ('http://127.0.0.1:8080/profile.html')
+window.location.href = ('http://127.0.0.1:8080/profile.html')
 } else{
 console.log('not logged in')
 btnLogout.classList.add('hide');
