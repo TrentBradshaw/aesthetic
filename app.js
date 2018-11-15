@@ -1,26 +1,5 @@
-// Initialize Firebase
-var config = {
-    apiKey: "AIzaSyCjZZJ2rNAzKgkZ9ioE0UeufR3W3RSDN1Y",
-    authDomain: "walrusaesthetic.firebaseapp.com",
-    databaseURL: "https://walrusaesthetic.firebaseio.com",
-    projectId: "walrusaesthetic",
-    storageBucket: "walrusaesthetic.appspot.com",
-    messagingSenderId: "264200815299"
-  };
-  firebase.initializeApp(config);
-  
-  const btnLogout = document.getElementById('btnLogout');
-  const database = firebase.database();
-  const storage = firebase.storage();
-  const uploader = document.getElementById('uploader');
-  const fileButton = document.getElementById('fileButton');
-    btnLogout.addEventListener('click', e => {
-    firebase.auth().signOut();
-    window.location.href = ('http://127.0.0.1:8080')
-});
-
-
-
+const uploader = document.getElementById('uploader');
+const fileButton = document.getElementById('fileButton');
 //listen for file selection
 fileButton.addEventListener('change', function(e) {
     //get file
@@ -33,7 +12,7 @@ fileButton.addEventListener('change', function(e) {
     //upload file
     let task = storageRef.put(file);
     console.log("name of uploaded file: " + file.name);
-
+  
     //update progress bar
     task.on('state_changed', progress, error, complete) 
     
@@ -43,9 +22,9 @@ fileButton.addEventListener('change', function(e) {
     };
     
     function error(err){
-
+  
     };
-
+  
     function complete(){
         console.log(file.name);
         console.log(e.target.value);
@@ -70,86 +49,8 @@ fileButton.addEventListener('change', function(e) {
         });
         console.log('after url request');
     };
-
+  
    
-
-});
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-
-    
-
-    
-    
-      
-      
-      
-      
-      
-      
-      //let displayURL =  storageService.refFromURL('gs://bucket/aesthetic_pics/' + file.name);
-        //console.log(displayURL.location);
-
-        
-        
-   
-
-
-       
-    
-    
-   
-
-
-
-    
-   // let storage = firebase.storage();
-   // let storageReff = storage.ref();
-   // let tangRef = storageReff.child('/aesthetic_pics' + file.name);
-    //console.log('Before requesting download URL');
-    //console.log(file.name);
-    //tangRef.getDownloadURL().then(function(url) 
-    //    {
-       //  //   console.log('Got download URL');
-      //      var test = url
-        //    document.querySelector('img').src = test;
-     //   }).catch(function(error) 
-        
-        //    switch (error.code) 
-          //  {
-              //  case 'storage/object_not_found':
-                //    break;
-
-             //   case 'storage/unauthorized':
-                //    break;
-
-             //   case 'storage/canceled':
-                //    break;
-
-            //    case 'storage/unknown':
-             //       break;
-            //
-    //    });
-       // console.log('After requesting download URL');
-       // var test = 'firebase_url';
-       // document.querySelector('img').src = test
-    
+  
+  });
+  
