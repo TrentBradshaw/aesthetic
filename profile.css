@@ -28,23 +28,19 @@ border: 1px solid red;
     border: 1px solid rgba(0, 0, 0, 0.8);
     padding: 20px;
     font-size: 30px;
-    height: 150px;
+    height: 193px;
     /* width: 450px; */
     text-align: center;
     justify-content: space-around;
-
-  }
-  .hoverImage{
-    visibility: hidden;
-    height: auto;
-    width: auto;
-    position: absolute;
-    right: 1507px;
-    top: 356px;
-
-  }
-.grid-item:hover .hoverImage{
-visibility:visible; 
+    
+}
+  
+img {
+    opacity: 0;
+}
+  
+img:hover{
+opacity: 1;
 }
 
 
