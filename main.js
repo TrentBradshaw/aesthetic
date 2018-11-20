@@ -3,12 +3,23 @@ const storageRef = storageService.ref();
 const database = firebase.database();
 const auth = firebase.auth();
 // todo -- make each aesthetic have a unique id and make it accessible to the file uploader so it can store the files properly.
-let projectName = document.getElementById('projectName');
+// todo -- make functions for code to eliminate scope issues
 const dropDownUserNameDisplay = document.getElementById('dropdown');
 const h2 = document.getElementById('h2');
-
+const createProject = document.getElementById('createProject');
 const uploader = document.getElementById('uploader');
-	const fileButton = document.getElementById('fileButton');
+const fileButton = document.getElementById('fileButton');
+
+
+const aestheticOne = document.getElementById('aestheticOne');
+const aestheticTwo = document.getElementById('aestheticTwo');
+const aestheticThree = document.getElementById('aestheticThree');
+const aestheticFour = document.getElementById('aestheticFour');
+const aestheticFive = document.getElementById('aestheticFive');
+const aestheticSix = document.getElementById('aestheticSix');
+const aestheticSeven = document.getElementById('aestheticSeven');
+const aestheticEight = document.getElementById('aestheticEight');
+const aestheticNine = document.getElementById('aestheticNine');
 //Authentication
 
 // Get elements for authentication
@@ -21,6 +32,12 @@ const username = document.getElementById('username');
 const firstName = document.getElementById('firstName');
 const lastName = document.getElementById('lastName');
 
+function getUserData(user, projectName) {
+	
+	
+
+}
+
 
 // add login event
 if (btnLogin){
@@ -31,7 +48,7 @@ if (btnLogin){
     	//Sign in
     	const promise = auth.signInWithEmailAndPassword(email,password);
 		promise.catch(e => console.log(e.message));
-		window.location.href = ('http://127.0.0.1:8080/profile.html');
+		//window.location.href = ('http://127.0.0.1:8080/profile.html');
     });
 }
   
@@ -39,18 +56,25 @@ if (btnLogin){
 if (btnSignUp) {
 	// add signup event
     btnSignUp.addEventListener('click', e => {
+			e.preventDefault();
 		const email = txtEmail.value;
 		const password = txtPassword.value;
 		
   		//Sign up
   		auth.createUserWithEmailAndPassword(email,password).then(
         	(firebaseUser)=>{
-				window.location.href = ('http://127.0.0.1:8080/profile.html');
+				
+					
+				
 				console.log('uid',firebaseUser.user.uid);
             	// here you can use either the returned user object or       firebase.auth().currentUser. I will use the returned user object
         		if(firebaseUser){
+					db.collection('users').doc(firebaseUser.user.uid).set({
+						userID: firebaseUser.user.uid,
+						email: firebaseUser.user.email,
+					});
 					btnLogout.classList.remove('hide');
-            		
+            		//window.location.href = ('http://127.0.0.1:8080/profile.html');
 					//console.log(user)
             		//db.collection('users').get().then(snapshot => {
             		//	snapshot.docs.forEach(doc => {
@@ -75,42 +99,256 @@ if (btnSignUp) {
 }
 
 firebase.auth().onAuthStateChanged(function(user) {
-	
 	if(user){
-	
-
-	db.collection('users').add({
-		userID: user.uid,
-		email: user.email,
-		username: user.displayName,
-	});
-	db.collection('users').get().then(snapshot => {
-		snapshot.docs.forEach(doc => {
-			if (doc.data().userID == user.uid){
-			console.log(doc.data());
-			userData = doc.data();
-			//const headerName = doc.data().username;
-		 	//console.log(headerName);
-			//if(dropDownUserNameDisplay){
-			//	dropDownUserNameDisplay.value = headerName;
-		 	//}
-			//if(h2){
-			//	console.log(headerName);
-			//	h2.innerHTML = headerName;
-			//	}  
-			//	   
+		console.log(user);
+		const userRef = db.collection('users').doc(user.uid);
+		
+		
+				//const headerName = doc.data().username;
+				 //console.log(headerName);
+				//if(dropDownUserNameDisplay){
+				//	dropDownUserNameDisplay.value = headerName;
+				 //}
+				//if(h2){
+				//	console.log(headerName);
+				//	h2.innerHTML = headerName;
+				//	}  
+				//	   
+				
+			if (createProject){
+				createProject.addEventListener('click', e => {
+					e.preventDefault();
+					userRef.update({
+						aesthetic2: projectName.value
+					})
+				})
 			}
-		});
-	});         
+		
+	
+		if(aestheticOne){
+			aestheticOne.addEventListener('click', e => {
+				e.preventDefault();
+				const aestheticImgOne = document.getElementById('aestheticImgOne');
+				let projectNameInput = document.createElement('input');
+				const button = document.createElement('button');
+				button.setAttribute('id','aestheticCreationButton');
+				aestheticImgOne.style.display = 'none';
+				aestheticOne.appendChild(projectNameInput);
+				aestheticOne.appendChild(button);
+				const aestheticCreationButton = document.getElementById('aestheticCreationButton');
+				aestheticCreationButton.addEventListener('click', e => {
+					console.log(userRef);
+					//userRef.update({
+					//	aestheticOne: projectNameInput.value
+				//	})
+					//setTimeout(function () {
+					//	window.location.href = 'http://127.0.0.1:8080/aesthetic.html'; //will redirect to your blog page (an ex: blog.html)
+				 //}, 2000); //will call the function after 2 secs.
+				})
 
-if (fileButton){
-//listen for file selection
-fileButton.addEventListener('change', function(e) {
+				
+
+				
+				
+				
+	 
+	 }); ;
+			
+
+
+		}
+		if(aestheticTwo){
+			aestheticTwo.addEventListener('click', e => {
+				e.preventDefault();
+				let projectName = document.getElementById('projectName');
+				aestheticImgTwo = document.getElementById('aestheticImgTwo');
+
+				console.log(userRef);
+				userRef.update({
+					aestheticTwo: projectName.value
+				})
+				//setTimeout(function () {
+				//	window.location.href = 'http://127.0.0.1:8080/aesthetic.html'; //will redirect to your blog page (an ex: blog.html)
+			 //}, 2000); //will call the function after 2 secs.
+	 
+	 }); ;
+			
+
+
+		}
+		if(aestheticThree){
+			aestheticThree.addEventListener('click', e => {
+				e.preventDefault();
+				let projectName = document.getElementById('projectName');
+				aestheticImgThree = document.getElementById('aestheticImgThree');
+
+				console.log(userRef);
+				userRef.update({
+					aestheticThree: projectName.value
+				})
+				//setTimeout(function () {
+				//	window.location.href = 'http://127.0.0.1:8080/aesthetic.html'; //will redirect to your blog page (an ex: blog.html)
+			 //}, 2000); //will call the function after 2 secs.
+	 
+	 }); ;
+			
+
+
+		}
+		if(aestheticFour){
+			aestheticFour.addEventListener('click', e => {
+				e.preventDefault();
+				let projectName = document.getElementById('projectName');
+				aestheticImgFour = document.getElementById('aestheticImgFour');
+
+				console.log(userRef);
+				userRef.update({
+					aestheticFour: projectName.value
+				})
+				//setTimeout(function () {
+				//	window.location.href = 'http://127.0.0.1:8080/aesthetic.html'; //will redirect to your blog page (an ex: blog.html)
+			 //}, 2000); //will call the function after 2 secs.
+	 
+	 }); ;
+			
+
+
+
+			
+
+
+		}if(aestheticFive){
+			aestheticFive.addEventListener('click', e => {
+				e.preventDefault();
+				let projectName = document.getElementById('projectName');
+				aestheticImgFive = document.getElementById('aestheticImgFive');
+
+				console.log(userRef);
+				userRef.update({
+					aestheticFive: projectName.value
+				})
+				//setTimeout(function () {
+				//	window.location.href = 'http://127.0.0.1:8080/aesthetic.html'; //will redirect to your blog page (an ex: blog.html)
+			 //}, 2000); //will call the function after 2 secs.
+	 
+	 }); ;
+			
+
+
+		}if(aestheticSix){
+			aestheticSix.addEventListener('click', e => {
+				e.preventDefault();
+				let projectName = document.getElementById('projectName');
+				aestheticImgSix = document.getElementById('aestheticImgSix');
+
+				console.log(userRef);
+				userRef.update({
+					aestheticSix: projectName.value
+				})
+				//setTimeout(function () {
+				//	window.location.href = 'http://127.0.0.1:8080/aesthetic.html'; //will redirect to your blog page (an ex: blog.html)
+			 //}, 2000); //will call the function after 2 secs.
+	 
+	 }); ;
+			
+
+
+		}if(aestheticSeven){
+			aestheticSeven.addEventListener('click', e => {
+				e.preventDefault();
+				let projectName = document.getElementById('projectName');
+				aestheticImgSeven = document.getElementById('aestheticImgSeven');
+
+				console.log(userRef);
+				userRef.update({
+					aestheticSeven: projectName.value
+				})
+				//setTimeout(function () {
+				//	window.location.href = 'http://127.0.0.1:8080/aesthetic.html'; //will redirect to your blog page (an ex: blog.html)
+			 //}, 2000); //will call the function after 2 secs.
+	 
+	 }); ;
+			
+
+
+		}
+		if(aestheticEight){
+			aestheticEight.addEventListener('click', e => {
+				e.preventDefault();
+				let projectName = document.getElementById('projectName');
+				aestheticImgEight = document.getElementById('aestheticImgEight');
+
+				console.log(userRef);
+				userRef.update({
+					aestheticEight: projectName.value
+				})
+				//setTimeout(function () {
+				//	window.location.href = 'http://127.0.0.1:8080/aesthetic.html'; //will redirect to your blog page (an ex: blog.html)
+			 //}, 2000); //will call the function after 2 secs.
+	 
+	 }); ;
+			
+
+
+		}
+		if(aestheticNine){
+			aestheticNine.addEventListener('click', e => {
+				e.preventDefault();
+				let projectName = document.getElementById('projectName');
+				aestheticImgNine = document.getElementById('aestheticImgNine');
+
+				console.log(userRef);
+				userRef.update({
+					aestheticNine: projectName.value
+				})
+				//setTimeout(function () {
+				//	window.location.href = 'http://127.0.0.1:8080/aesthetic.html'; //will redirect to your blog page (an ex: blog.html)
+			 //}, 2000); //will call the function after 2 secs.
+	 
+	 }); ;
+			
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	if (fileButton){
+	//listen for file selection
+	fileButton.addEventListener('change', function(e) {
 	//get file
 	let file = e.target.files[0];
 	
 	//create storage ref
-	let storageRef = storageService.ref("/path/" + user.uid + file.name);
+	let storageRef = storageService.ref(user.uid);
+	let storageRefSpecific = storageRef.child(aestheticName);
 	console.log("user id" + user.uid);
 	console.log("storage ref " + storageRef);
 	console.log("Storage ref url: " + storageRef.url);
@@ -182,7 +420,7 @@ if(btnLogout){
 	btnLogout.addEventListener('click', e => {
 	auth.signOut();
 	console.log("Signed Out");
-	window.location.href = ('http://127.0.0.1:8080')
+	//window.location.href = ('http://127.0.0.1:8080')
 	});
 }
 
