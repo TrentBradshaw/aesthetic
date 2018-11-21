@@ -1,0 +1,59 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>Aesthetic</title>
+  <meta name="description" content="Aesthetic">
+  <meta name="Trent Bradshaw" content="Aesthetic">
+
+  <link rel="stylesheet" href="/css/aesthetic.css">
+ 
+  <script src="https://www.gstatic.com/firebasejs/5.5.7/firebase.js"></script>
+</head>
+<header class = 'header' id = 'header'>
+    <h1>AESTHETIC</h1>
+    <div id = 'uploadAndProgress'>
+    <progress value='0' max ='100' id ='uploader'>0%</progress>
+    <input type='file' value='upload' id='fileButtonFive'/>
+</div>
+    <div id = 'navButtons'>
+            <button id = 'btnLogout' class = 'btn btn-action'>LOG OUT</button>
+            <button>HOME</button>
+            <button>MENU</button>
+    </div>
+    
+    
+        
+ </div>
+</header>
+<body>
+        
+    
+    
+    
+    
+    
+    <div id = 'photocontainer'>
+
+    </div>
+    <script>
+            var config = {
+ apiKey: "AIzaSyCjZZJ2rNAzKgkZ9ioE0UeufR3W3RSDN1Y",
+ authDomain: "walrusaesthetic.firebaseapp.com",
+ databaseURL: "https://walrusaesthetic.firebaseio.com",
+ projectId: "walrusaesthetic",
+ storageBucket: "walrusaesthetic.appspot.com",
+ messagingSenderId: "264200815299"
+};
+firebase.initializeApp(config);
+const db = firebase.firestore();
+db.settings({ timestampsInSnapshots: true }); 
+</script>
+
+    
+    
+    <script src="/js/main.js"></script>
+    
+</body>
