@@ -8,7 +8,7 @@
   <meta name="description" content="Aesthetic">
   <meta name="Trent Bradshaw" content="Aesthetic">
 
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="/css/styles.css">
  
   <script src="https://www.gstatic.com/firebasejs/5.5.7/firebase.js"></script>
 </head>
@@ -18,22 +18,26 @@
 <body>
     
         <div class = 'container'>
+           <div id = 'inputContainer'>
+            <input id = 'txtEmail' type='email' placeholder='Email' class="authInputFields">
+
+            <input id = 'txtPassword' type="password" placeholder='password'class='authInputFields'>
+           </div>
            
-            <input id = 'txtEmail' type='email' placeholder='Email'>
-
-            <input id = 'txtPassword' type="password" placeholder='password'>
-
-            <button id='btnLogin' class='btn btn-action'>
-                Log In
-            </button>
-
-            <button id = 'btnSignUp'class = 'btn btn-secondary'>
-                Sign Up
-            </button>
-
-            <button id = 'btnLogout' class = 'btn btn-action hide'>
-                Log Out
-            </button>
+            <div id = 'authButtonsContainer'>
+                <button id='btnLogin' class='btn btn-action authButtons'>
+                    Log In
+                </button>
+    
+                <button id = 'btnSignUp'class = 'btn btn-secondary authButtons'>
+                    Sign Up
+                </button>
+    
+                <button id = 'btnLogout' class = 'btn btn-action hide authButtons'>
+                    Log Out
+                </button>
+            </div>
+            
         
         </div>
 
@@ -56,7 +60,7 @@ db.settings({ timestampsInSnapshots: true });
 
 
 
-<script src="main.js"></script>
+<script src="/js/main.js"></script>
 
 </body>
 </html>
