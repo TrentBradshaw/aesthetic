@@ -253,7 +253,7 @@ firebase.auth().onAuthStateChanged(function(user) {
 						tags.splice(index, 1);
 						el.removeChild(tag.element);
 						refreshTags();
-				   }
+				    }
 				
 					function refreshTags () {
 					let tagsList = [];
@@ -290,7 +290,8 @@ firebase.auth().onAuthStateChanged(function(user) {
 					userRef.update({
 						aestheticOne: projectNameInput.value,
 						aestheticOneExists: true,
-						aestheticOneTags: tagsArray
+						aestheticOneTags: tagsArray,
+					
 					});
 					setTimeout(function () {
 						//window.location.href = 'http://127.0.0.1:8080/html/aesthetic1.html'; //will redirect to your blog page (an ex: blog.html)
@@ -854,7 +855,7 @@ console.log(userRef);
 				const tagsArrayPulled = doc.data().aestheticOneTags;
 				console.log(aestheticNameUpdated)
 				console.log(tagsArrayPulled);
-				console.log(tagsArrayPulled.length);
+				console.log("tags array length" + tagsArrayPulled.length);
 				for( i=0; i< tagsArrayPulled.length; i++ ){
 					const tagSpan = document.createElement('span');
 					tagSpan.innerHTML = tagsArrayPulled[i];
@@ -867,10 +868,10 @@ console.log(userRef);
 		  }
 		})
 	})
-     
-fileButtonOne.addEventListener('change', function(e) {
+	const aestheticOneFileNamesArray = [];
+	fileButtonOne.addEventListener('change', function(e) {
 
-db.collection('users').get().then(snapshot => {
+	db.collection('users').get().then(snapshot => {
         snapshot.docs.forEach(doc => {
           
           
@@ -883,60 +884,74 @@ db.collection('users').get().then(snapshot => {
 
 			let file = e.target.files[0];
 
-//create storage ref
-let storageRef = storageService.ref("/" + user.uid + "/" +  aestheticNameUpdated + '/' + file.name);
+	//create storage ref
+	let storageRef = storageService.ref("/" + user.uid + "/" +  aestheticNameUpdated + '/' + file.name);
 
-//upload file
-file.name = user.uid + file.name;
-let task = storageRef.put(file);
+	//upload file
+	file.name = user.uid + file.name;
+	let task = storageRef.put(file);
+	const filename = file.name;
+	console.log(filename)
+	
+	
+	aestheticOneFileNamesArray.push(file.name);
+	console.log(aestheticOneFileNamesArray);
+	console.log(file.name);
+	console.log(filename);
+	//const updatedAestheticOneFileNamesArray = aestheticOneFileNamesArray.push(file.name);
+	//console.log(updatedAestheticOneFileNamesArray.item);
+	//userRef.update({
+	//aestheticOneFileNames: updatedAestheticOneFileNamesArray
+	//})
+
+	//update progress bar
+	task.on('state_changed', progress, error, complete) 
+	
+	function progress(snapshot) {
+	var percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+	uploader.value = percentage;
+	};
+
+	function error(err){
+
+	};
+
+	function complete(){
+	console.log(file.name);
+	console.log(e.target.value);
+	console.log('file uploaded');
+	console.log('before url request');
+	console.log(storageRef);
+	let div = document.getElementById('photocontainer');
+	div.setAttribute('style', 'text-align: center')
+	let imgContainer = document.createElement('img');
+	imgContainer.setAttribute('id', file.name);
+	imgContainer.setAttribute('height', '70%');
+	imgContainer.setAttribute('width', '90%');
+	div.appendChild(imgContainer);
+	
+	storageRef.getDownloadURL().then(function(url) {
+	console.log('url acquired');
+	var img = document.getElementById(file.name);
+	console.log("url : " + url);
+	img.src = url;
+	
 
 
-//update progress bar
-task.on('state_changed', progress, error, complete) 
-
-function progress(snapshot) {
-var percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-uploader.value = percentage;
-};
-
-function error(err){
-
-};
-
-function complete(){
-console.log(file.name);
-console.log(e.target.value);
-console.log('file uploaded');
-console.log('before url request');
-console.log(storageRef);
-let div = document.getElementById('photocontainer');
-div.setAttribute('style', 'text-align: center')
-let imgContainer = document.createElement('img');
-imgContainer.setAttribute('id', file.name);
-imgContainer.setAttribute('height', '70%');
-
-imgContainer.setAttribute('width', '90%');
-div.appendChild(imgContainer);
-storageRef.getDownloadURL().then(function(url) {
-console.log('url acquired');
-var img = document.getElementById(file.name);
-console.log("url : " + url);
-img.src = url;
-
-}).catch(function(error) {
-// Handle any errors
-});
-console.log('after url request');
-};
-
-
-
-
-		}	
+	}).catch(function(error) {
+	// Handle any errors
 	});
-});
+	console.log('after url request');
+	};
 
-})
+
+
+
+			}	
+		});
+	});
+
+	})
 }	
 
 if (fileButtonTwo){
@@ -1486,3 +1501,22 @@ if(btnLogout){
 
 
 //var projectDbRef = db.collection('projects').doc.
+
+
+
+// EXPLORE
+const exploreRef = storageService.ref('/aesthetic_pics');
+console.log(exploreRef);
+for(item in exploreRef){
+	const exploreDiv = document.createElement('div');
+	const imgPreviewer = document.createElement('img');
+	console.log(exploreRef)
+	
+	//exploreDiv.appendChild(imgPreviewer);
+	//.getDownloadURL().then(function(url) {
+	//console.log('url acquired');
+	//console.log("url : " + url);
+	//imgPreviewer.src = url;
+//});
+};
+
