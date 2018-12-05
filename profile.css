@@ -35,11 +35,11 @@ border: 1px solid red;
     
 }
 
-img {
+#aestheticImgOne {
     opacity: 0;
 }
   
-img:hover{
+#aestheticImgOne:hover{
 opacity: 1;
 }
 

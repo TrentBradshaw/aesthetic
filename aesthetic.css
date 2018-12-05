@@ -3,6 +3,16 @@
    
 }
 
+
+#fileButtonOne {
+    display: none;
+
+}
+
+#aestheticOneSaveButton{
+display: none;
+}
+
 body {
     display: flex;
     min-height: 100vh;
