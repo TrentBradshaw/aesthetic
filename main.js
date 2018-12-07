@@ -66,6 +66,7 @@ const username = document.getElementById('username');
 const firstName = document.getElementById('firstName');
 const lastName = document.getElementById('lastName');
 
+
 //LOGIN EVENT
 if (btnLogin){
 	btnLogin.addEventListener('click', e => {
@@ -96,9 +97,12 @@ if (btnSignUp) {
 				console.log('uid',firebaseUser.user.uid);
             	// here you can use either the returned user object or       firebase.auth().currentUser. I will use the returned user object
         		if(firebaseUser){
+					const userAestheticListInit = [];
+					userAestheticListInit.push(true);
 					db.collection('users').doc(firebaseUser.user.uid).set({
 						userID: firebaseUser.user.uid,
 						email: firebaseUser.user.email,
+						userAestheticList : userAestheticListInit
 					});
 					
 					btnLogout.classList.remove('hide');
@@ -111,870 +115,233 @@ if (btnSignUp) {
 	})
 }
 
+function getAestheticInfo(){
+    const aesthetic = document.getElementById('aesthetic');
+    const projectNameInput = document.createElement('input');
+    const submitButton = document.createElement('button');
+    const cancelButton = document.createElement('button');
+	const buttonDiv = document.createElement('div');
+	const aestheticImg = document.getElementById('aestheticImg');
 
+    //apply attributes to the buttons and input
+    submitButton.setAttribute('id','aestheticCreationButton');
+    cancelButton.setAttribute('id', 'aestheticCancelButton');
+    buttonDiv.setAttribute('id','buttonDiv');
+    projectNameInput.setAttribute('id','aestheticInput');
+
+    // Create the nsfw slider
+    const sliderDiv = document.createElement('div');
+    const label = document.createElement('label');
+    const checkInput = document.createElement('input');
+    const span = document.createElement('span');
+    const nsfwDiv = document.createElement('div');
+    const nsfwHeader = document.createElement('h3');
+
+    //create the tags div
+    const tagsDiv = document.createElement('div');
+    tagsDiv.setAttribute('class', 'tags-input');
+    tagsDiv.setAttribute('data-name', 'tags-input')
+    tagsDiv.setAttribute('id', 'tagsDiv');
+
+    // Apply attributes to the NSFW slider
+    label.setAttribute('class', 'switch');
+    checkInput.setAttribute('type', 'checkbox');
+    checkInput.setAttribute('id', 'check');
+    span.setAttribute('class', 'slider round');
+    sliderDiv.setAttribute('id', 'sliderDiv');
+    nsfwDiv.setAttribute('id', 'nsfwDiv');
+    nsfwHeader.innerHTML = 'NSFW';
+
+    //append elements to the slider div
+    label.appendChild(checkInput);
+    label.appendChild(span);
+    sliderDiv.appendChild(label);
+    nsfwDiv.appendChild(sliderDiv);
+    nsfwDiv.appendChild(nsfwHeader);
+
+    //change the style
+    aesthetic.style.display = 'flex';
+    aesthetic.style.flexDirection = 'column';
+    aestheticImg.style.display = 'none';
+
+    submitButton.innerHTML = 'SUBMIT';
+    cancelButton.innerHTML = 'CANCEL';
+
+    buttonDiv.appendChild(submitButton);
+    buttonDiv.appendChild(cancelButton)
+
+
+    aesthetic.appendChild(projectNameInput);
+    aesthetic.appendChild(tagsDiv);
+    aesthetic.appendChild(nsfwDiv);
+    aesthetic.appendChild(buttonDiv);
+
+	//todo -- fix tag system
+    [].forEach.call(document.getElementsByClassName('tags-input'), function (el) {
+        let hiddenInput = document.createElement('input'),
+        mainInput = document.createElement('input'),
+        tags = [];
+        hiddenInput.setAttribute('type', 'hidden');
+        hiddenInput.setAttribute('name', el.getAttribute('data-name'));
+        mainInput.setAttribute('type', 'text');
+        mainInput.classList.add('main-input');
+                    
+                    
+        mainInput.addEventListener('input', function () {
+            let enteredTags = mainInput.value.split(',');
+            if (enteredTags.length > 1) {
+                enteredTags.forEach(function (t) {
+                    let filteredTag = filterTag(t);
+                    if (filteredTag.length > 0){
+                        addTag(filteredTag);
+                    }
+                        
+                });
+                mainInput.value = '';
+            }
+        });
+    
+        mainInput.addEventListener('keydown', function (e) {
+            let keyCode = e.which || e.keyCode;
+            if (keyCode === 8 && mainInput.value.length === 0 && tags.length > 0) {
+                removeTag(tags.length - 1);
+            }
+        });
+	
+		
+		function removeTag (index) {
+			let tag = tags[index];
+			tags.splice(index, 1);
+			el.removeChild(tag.element);
+			refreshTags();
+		}
+		function addTag (text) {
+			let tag = {
+				text: text,
+				element: document.createElement('span'),
+			};
+		
+			tag.element.classList.add('tag');
+			tag.element.textContent = tag.text;
+		
+			let closeBtn = document.createElement('span');
+			closeBtn.classList.add('close');
+			closeBtn.addEventListener('click', function () {
+			removeTag(tags.indexOf(tag));
+			});
+			tag.element.appendChild(closeBtn);
+		
+			tags.push(tag);
+		
+			el.insertBefore(tag.element, mainInput);
+		
+			refreshTags();
+		}
+		function refreshTags () {
+		let tagsList = [];
+		tags.forEach(function (t) {
+				tagsList.push(t.text);
+			});
+			hiddenInput.value = tagsList.join(',');
+			console.log(tagsList)
+			return tagsList;
+		}
+		
+		function filterTag (tag) {
+			return tag.replace(/[^\w -]/g, '').trim().replace(/\W+/g, '-');
+		}
+
+        el.appendChild(mainInput);
+        el.appendChild(hiddenInput);
+    });
+}
+function createAesthetic(){
+    const aesthetic = document.createElement('div');
+    const aestheticContainer = document.getElementById('aestheticContainer');
+    
+    const aestheticImg = document.createElement('img');
+    aestheticImg.setAttribute('src', "/212203-200.png");
+	aestheticImg.setAttribute('alt', 'plus sign');
+	aestheticImg.setAttribute('id', 'aestheticImg');
+	aesthetic.setAttribute('id', 'aesthetic');
+	aesthetic.appendChild(aestheticImg);
+	aestheticContainer.appendChild(aesthetic);
+	
+}
+
+
+
+function manageUserInfo(user){
+	const userRef = db.collection('users').doc(user.uid);
+	db.collection('users').get().then(snapshot => {
+        snapshot.docs.forEach(doc => {
+            if (doc.data().userID == user.uid){
+				const userDetails = doc.data();
+				console.log(userDetails);
+				
+
+				let aestheticInput = document.getElementById('aestheticInput');
+				let aestheticName = aestheticInput.value;
+				console.log(aestheticName);
+				let childDivs = document.getElementById('tagsDiv').getElementsByClassName('tag');
+				let tagCount = 0;
+				let tagsArray = [];
+				for( i=0; i< childDivs.length; i++ ){
+					tagCount +=1;
+					var childDiv = childDivs[i];
+					tagsArray.push(childDiv.innerText);
+					console.log("tag" + tagCount + ":" + childDiv.innerText);
+				}
+				console.log(tagsArray);
+				const userRef = db.collection('users').doc(user.uid);
+				console.log(userRef)
+				console.log(userRef.email);
+				console.log(userDetails.userAestheticList);
+				let aestheticsListArray = userDetails.userAestheticList;
+				let aestheticEntry = ('aesthetic' + aestheticName + 'tags')
+				aestheticsListArray.push(aestheticName);
+				console.log(user.uid);
+				db.collection('users').doc(user.uid).collection('aesthetics').doc(aestheticName).set({
+					aestheticTags: tagsArray,
+					aesthetical: true
+				})
+				userRef.update({
+					userAestheticList: aestheticsListArray,
+					
+				});
+			}
+		})
+	})
+	console.log(userRef);
+	return userRef;
+  }
 
 //FIREBASE AUTHENTICATION STATE CHANGE
 firebase.auth().onAuthStateChanged(function(user) {
 	if(user){
-		console.log("user: " + user);
-		//reference to the database that matches the user's ID key
+		
 		const userRef = db.collection('users').doc(user.uid);
+		console.log("user: " + user);
 		console.log("userRef: " + userRef)
+		
+		createAesthetic();
+		
+		aestheticImg.addEventListener('click', () =>{
+			getAestheticInfo();
+			const aestheticCreationButton = document.getElementById('aestheticCreationButton');
+			aestheticCreationButton.addEventListener('click', ()=>{
+				manageUserInfo(user);
+			})
+			
+		})
+		
+		
+		
+		
 				
-		if(aestheticOne){	
-			db.collection('users').get().then(snapshot => {
-				snapshot.docs.forEach(doc => {
-					if (doc.data().userID == user.uid){
-						usernameHeader.innerHTML = doc.data().username;
-						if (doc.data().aestheticOneExists){
-							const coverRef = storageService.ref("/" + user.uid + "/" + doc.data().aestheticOne + "/" +doc.data().aestheticOneFileNames[0]);
-							coverRef.getDownloadURL().then(function(url) {
-								console.log('url acquired');
-								const aestheticCover = document.createElement('img');
-								const aestheticCoverClickRedirect = document.createElement('a');
-								aestheticCoverClickRedirect.setAttribute('href','http://127.0.0.1:8080/html/aesthetic1.html');
-								
-								console.log("url : " + url);
-								aestheticCover.src = url;
-								aestheticCover.setAttribute('id', doc.data().aestheticOneFileNames[0]);
-								aestheticImgOne.style.display = 'none';
-								aestheticCoverClickRedirect.appendChild(aestheticCover);
-								aestheticOne.appendChild(aestheticCoverClickRedirect);
-							});
-						}else{
-								aestheticImgOne.addEventListener('click', e => {	
-									e.preventDefault();
-									let projectNameInput = document.createElement('input');
-									const submitButton = document.createElement('button');
-									const cancelButton = document.createElement('button');
-									const buttonDiv = document.createElement('div');
-					
-									//apply attributes to the buttons and input
-									submitButton.setAttribute('id','aestheticCreationButton');
-									cancelButton.setAttribute('id','aestheticCancelButton');
-									buttonDiv.setAttribute('id', 'buttonDiv');
-									projectNameInput.setAttribute('id', 'aestheticInput');
-									
-									// Create the nsfw slider
-									const sliderDiv = document.createElement('div');
-									const label = document.createElement('label');
-									const checkInput = document.createElement('input');
-									const span = document.createElement('span');
-									const nsfwDiv = document.createElement('div');
-									const nsfwHeader = document.createElement('h3');
-					
-									//create the tags div
-									const tagsDiv = document.createElement('div');
-									tagsDiv.setAttribute('class', 'tags-input');
-									tagsDiv.setAttribute('data-name', 'tags-input')
-									tagsDiv.setAttribute('id', 'tagsDiv');
-					
-									// Apply attributes to the NSFW slider
-									label.setAttribute('class', 'switch');
-									checkInput.setAttribute('type', 'checkbox');
-									checkInput.setAttribute('id', 'check');
-									span.setAttribute('class', 'slider round');
-									sliderDiv.setAttribute('id', 'sliderDiv');
-									nsfwDiv.setAttribute('id', 'nsfwDiv');
-									nsfwHeader.innerHTML = 'NSFW';
-					
-									//append elements to the slider div
-									label.appendChild(checkInput);
-									label.appendChild(span);
-									sliderDiv.appendChild(label);
-									nsfwDiv.appendChild(sliderDiv);
-									nsfwDiv.appendChild(nsfwHeader);
-									
-									//change the style
-									aestheticOne.style.display = 'flex';
-									aestheticOne.style.flexDirection = 'column';
-									aestheticImgOne.style.display = 'none';
-									
-									submitButton.innerHTML = 'SUBMIT';
-									cancelButton.innerHTML = 'CANCEL';
-									
-									buttonDiv.appendChild(submitButton);
-									buttonDiv.appendChild(cancelButton)
-					
-									
-									aestheticOne.appendChild(projectNameInput);
-									aestheticOne.appendChild(tagsDiv);
-									aestheticOne.appendChild(nsfwDiv);
-									aestheticOne.appendChild(buttonDiv);
-												
-									[].forEach.call(document.getElementsByClassName('tags-input'), function (el) {
-										let hiddenInput = document.createElement('input'),
-										mainInput = document.createElement('input'),
-										tags = [];
-										hiddenInput.setAttribute('type', 'hidden');
-										hiddenInput.setAttribute('name', el.getAttribute('data-name'));
-										mainInput.setAttribute('type', 'text');
-										mainInput.classList.add('main-input');
-													
-													
-										mainInput.addEventListener('input', function () {
-											let enteredTags = mainInput.value.split(',');
-											if (enteredTags.length > 1) {
-												enteredTags.forEach(function (t) {
-													let filteredTag = filterTag(t);
-													if (filteredTag.length > 0){
-														addTag(filteredTag);
-													}
-														
-												});
-												mainInput.value = '';
-											}
-										});
-									
-										mainInput.addEventListener('keydown', function (e) {
-											let keyCode = e.which || e.keyCode;
-											if (keyCode === 8 && mainInput.value.length === 0 && tags.length > 0) {
-												removeTag(tags.length - 1);
-											}
-										});
-									
-										el.appendChild(mainInput);
-										el.appendChild(hiddenInput);
-									
-										
-										function addTag (text) {
-											let tag = {
-												text: text,
-												element: document.createElement('span'),
-											};
-									
-											tag.element.classList.add('tag');
-											tag.element.textContent = tag.text;
-									
-											let closeBtn = document.createElement('span');
-											closeBtn.classList.add('close');
-											closeBtn.addEventListener('click', function () {
-											removeTag(tags.indexOf(tag));
-											});
-											tag.element.appendChild(closeBtn);
-									
-											tags.push(tag);
-									
-											el.insertBefore(tag.element, mainInput);
-									
-											refreshTags();
-										}
-									
-										function removeTag (index) {
-											let tag = tags[index];
-											tags.splice(index, 1);
-											el.removeChild(tag.element);
-											refreshTags();
-										}
-									
-										function refreshTags () {
-										let tagsList = [];
-										tags.forEach(function (t) {
-												tagsList.push(t.text);
-											});
-											hiddenInput.value = tagsList.join(',');
-											console.log(tagsList)
-										}
-									
-										function filterTag (tag) {
-											return tag.replace(/[^\w -]/g, '').trim().replace(/\W+/g, '-');
-										}
-									});
-												
-									const aestheticCreationButton = document.getElementById('aestheticCreationButton');
-									aestheticCreationButton.addEventListener('click', e => {
-										console.log(projectNameInput.value);
-										let childDivs = document.getElementById('tagsDiv').getElementsByClassName('tag');
-										let tagCount = 0;
-										let tagsArray = [];
-										for( i=0; i< childDivs.length; i++ ){
-											tagCount +=1;
-											var childDiv = childDivs[i];
-											tagsArray.push(childDiv.innerText);
-											console.log("tag" + tagCount + ":" + childDiv.innerText);
-										}
-										console.log(tagsArray);
-								
-								
-										userRef.update({
-											aestheticOne: projectNameInput.value,
-											aestheticOneExists: true,
-											aestheticOneTags: tagsArray,
-										});
-									
-										setTimeout(function () {
-											window.location.href = 'http://127.0.0.1:8080/html/aesthetic1.html'; //will redirect to your blog page (an ex: blog.html)
-										}, 2000); //will call the function after 2 secs.
-									});
-								}); 
-						}
-					}
-				})
-			})
-						
-		}
+		
 
-
-		if(aestheticTwo){
-			db.collection('users').get().then(snapshot => {
-				snapshot.docs.forEach(doc => {
-					if (doc.data().userID == user.uid){
-						usernameHeader.innerHTML = doc.data().username;
-						if (doc.data().aestheticTwoExists){
-							const coverRef = storageService.ref("/" + user.uid + "/" + doc.data().aestheticOne + "/" +doc.data().aestheticTwoFileNames[0]);
-							coverRef.getDownloadURL().then(function(url) {
-								console.log('url acquired');
-								const aestheticCover = document.createElement('img');
-								const aestheticCoverClickRedirect = document.createElement('a');
-								aestheticCoverClickRedirect.setAttribute('href','http://127.0.0.1:8080/html/aesthetic2.html');
-								
-								console.log("url : " + url);
-								aestheticCover.src = url;
-								aestheticCover.setAttribute('id', doc.data().aestheticTwoFileNames[0]);
-								aestheticImgTwo.style.display = 'none';
-								aestheticCoverClickRedirect.appendChild(aestheticCover);
-								aestheticTwo.appendChild(aestheticCoverClickRedirect);
-							});
-						}else{
-							aestheticImgTwo.addEventListener('click', e => {
-								e.preventDefault();
-								let projectNameInput = document.createElement('input');
-								const submitButton = document.createElement('button');
-								const cancelButton = document.createElement('button');
-								const buttonDiv = document.createElement('div');
-
-								//apply attributes to the buttons and input
-								submitButton.setAttribute('id','aestheticCreationButton');
-								cancelButton.setAttribute('id','aestheticCancelButton');
-								buttonDiv.setAttribute('id', 'buttonDiv');
-								projectNameInput.setAttribute('id', 'aestheticInput');
-							
-								// Create the nsfw slider
-								const sliderDiv = document.createElement('div');
-								const label = document.createElement('label');
-								const checkInput = document.createElement('input');
-								const span = document.createElement('span');
-								const nsfwDiv = document.createElement('div');
-								const nsfwHeader = document.createElement('h3');
-
-								//create the tags div
-								const tagsDiv = document.createElement('div');
-								tagsDiv.setAttribute('class', 'tags-input');
-								tagsDiv.setAttribute('data-name', 'tags-input')
-								tagsDiv.setAttribute('id', 'tagsDiv');
-
-								// Apply attributes to the NSFW slider
-								label.setAttribute('class', 'switch');
-								checkInput.setAttribute('type', 'checkbox');
-								checkInput.setAttribute('id', 'check');
-								span.setAttribute('class', 'slider round');
-								sliderDiv.setAttribute('id', 'sliderDiv');
-								nsfwDiv.setAttribute('id', 'nsfwDiv');
-								nsfwHeader.innerHTML = 'NSFW';
-
-								//append elements to the slider div
-								label.appendChild(checkInput);
-								label.appendChild(span);
-								sliderDiv.appendChild(label);
-								nsfwDiv.appendChild(sliderDiv);
-								nsfwDiv.appendChild(nsfwHeader);
-								
-								aestheticTwo.style.display = 'flex';
-								aestheticTwo.style.flexDirection = 'column';
-								aestheticImgTwo.style.display = 'none';
-
-								submitButton.innerHTML = 'SUBMIT';
-								cancelButton.innerHTML = 'CANCEL';
-								
-
-								buttonDiv.appendChild(submitButton);
-								buttonDiv.appendChild(cancelButton)
-
-								
-								aestheticTwo.appendChild(projectNameInput);
-								aestheticTwo.appendChild(tagsDiv);
-								aestheticTwo.appendChild(nsfwDiv);
-								aestheticTwo.appendChild(buttonDiv);
-
-								[].forEach.call(document.getElementsByClassName('tags-input'), function (el) {
-									let hiddenInput = document.createElement('input'),
-									mainInput = document.createElement('input'),
-									tags = [];
-									hiddenInput.setAttribute('type', 'hidden');
-									hiddenInput.setAttribute('name', el.getAttribute('data-name'));
-									mainInput.setAttribute('type', 'text');
-									mainInput.classList.add('main-input');
-												
-												
-									mainInput.addEventListener('input', function () {
-										let enteredTags = mainInput.value.split(',');
-										if (enteredTags.length > 1) {
-											enteredTags.forEach(function (t) {
-												let filteredTag = filterTag(t);
-												if (filteredTag.length > 0){
-													addTag(filteredTag);
-												}
-													
-											});
-											mainInput.value = '';
-										}
-									});
-								
-									mainInput.addEventListener('keydown', function (e) {
-										let keyCode = e.which || e.keyCode;
-										if (keyCode === 8 && mainInput.value.length === 0 && tags.length > 0) {
-											removeTag(tags.length - 1);
-										}
-									});
-								
-									el.appendChild(mainInput);
-									el.appendChild(hiddenInput);
-								
-									
-									function addTag (text) {
-										let tag = {
-											text: text,
-											element: document.createElement('span'),
-										};
-								
-										tag.element.classList.add('tag');
-										tag.element.textContent = tag.text;
-								
-										let closeBtn = document.createElement('span');
-										closeBtn.classList.add('close');
-										closeBtn.addEventListener('click', function () {
-											removeTag(tags.indexOf(tag));
-										});
-										tag.element.appendChild(closeBtn);
-								
-										tags.push(tag);
-								
-										el.insertBefore(tag.element, mainInput);
-								
-										refreshTags();
-									}
-								
-									function removeTag (index) {
-										let tag = tags[index];
-										tags.splice(index, 1);
-										el.removeChild(tag.element);
-										refreshTags();
-									}
-								
-									function refreshTags () {
-										let tagsList = [];
-										tags.forEach(function (t) {
-											tagsList.push(t.text);
-										});
-										hiddenInput.value = tagsList.join(',');
-										console.log(tagsList)
-									}
-								
-									function filterTag (tag) {
-										return tag.replace(/[^\w -]/g, '').trim().replace(/\W+/g, '-');
-									}
-								});
-					
-								const aestheticCreationButton = document.getElementById('aestheticCreationButton');
-								aestheticCreationButton.addEventListener('click', e => {
-						
-									console.log(projectNameInput.value);
-									let childDivs = document.getElementById('tagsDiv').getElementsByClassName('tag');
-									let tagCount = 0;
-									let tagsArray = [];
-									for( i=0; i< childDivs.length; i++ ){
-										tagCount +=1;
-										var childDiv = childDivs[i];
-										tagsArray.push(childDiv.innerText);
-										console.log("tag" + tagCount + ":" + childDiv.innerText);
-									}
-									console.log(tagsArray);
-									
-									
-									userRef.update({
-										aestheticTwo: projectNameInput.value,
-										aestheticTwoExists: true,
-										aestheticTwoTags: tagsArray,
-									});
-									setTimeout(function () {
-									window.location.href = 'http://127.0.0.1:8080/html/aesthetic2.html'; //will redirect to your blog page (an ex: blog.html)
-									}, 2000); //will call the function after 2 secs.
-								});
-							}); 
-						}
-					}
-				})
-			})
-		}
-
-		if(aestheticThree){
-				aestheticImgThree.addEventListener('click', e => {
-					e.preventDefault();
-					let projectNameInput = document.createElement('input');
-					const submitButton = document.createElement('button');
-					const cancelButton = document.createElement('button');
-					const buttonDiv = document.createElement('div');
-
-					//apply attributes to the buttons and input
-					submitButton.setAttribute('id','aestheticCreationButton');
-					cancelButton.setAttribute('id','aestheticCancelButton');
-					buttonDiv.setAttribute('id', 'buttonDiv');
-					projectNameInput.setAttribute('id', 'aestheticInput');
-					
-					// Create the nsfw slider
-					const sliderDiv = document.createElement('div');
-					const label = document.createElement('label');
-					const checkInput = document.createElement('input');
-					const span = document.createElement('span');
-					const nsfwDiv = document.createElement('div');
-					const nsfwHeader = document.createElement('h3');
-
-					// Apply attributes to the NSFW slider
-					label.setAttribute('class', 'switch');
-					checkInput.setAttribute('type', 'checkbox');
-					checkInput.setAttribute('id', 'check');
-					span.setAttribute('class', 'slider round');
-					sliderDiv.setAttribute('id', 'sliderDiv');
-					nsfwDiv.setAttribute('id', 'nsfwDiv');
-					nsfwHeader.innerHTML = 'NSFW';
-
-					//append elements to the slider div
-					label.appendChild(checkInput);
-					label.appendChild(span);
-					sliderDiv.appendChild(label);
-					nsfwDiv.appendChild(sliderDiv);
-					nsfwDiv.appendChild(nsfwHeader);
-					
-					aestheticThree.style.display = 'flex';
-					aestheticThree.style.flexDirection = 'column';
-					submitButton.innerHTML = 'SUBMIT';
-					cancelButton.innerHTML = 'CANCEL';
-					
-
-					buttonDiv.appendChild(submitButton);
-					buttonDiv.appendChild(cancelButton)
-
-					aestheticImgThree.style.display = 'none';
-					aestheticThree.appendChild(projectNameInput);
-					aestheticThree.appendChild(nsfwDiv);
-					aestheticThree.appendChild(buttonDiv);
-					
-					const aestheticCreationButton = document.getElementById('aestheticCreationButton');
-					aestheticCreationButton.addEventListener('click', e => {
-						console.log(userRef);
-						console.log(projectNameInput.value);
-						userRef.update({
-							aestheticThree: projectNameInput.value,
-							aestheticThreeExists: true
-						});
-						setTimeout(function () {
-							window.location.href = 'http://127.0.0.1:8080/html/aesthetic3.html'; //will redirect to your blog page (an ex: blog.html)
-					}, 2000); //will call the function after 2 secs.
-					});
-			}); 
-		}
-
-		if(aestheticFour){
-				aestheticImgFour.addEventListener('click', e => {
-					e.preventDefault();
-					let projectNameInput = document.createElement('input');
-					const submitButton = document.createElement('button');
-					const cancelButton = document.createElement('button');
-					const buttonDiv = document.createElement('div');
-
-					//apply attributes to the buttons and input
-					submitButton.setAttribute('id','aestheticCreationButton');
-					cancelButton.setAttribute('id','aestheticCancelButton');
-					buttonDiv.setAttribute('id', 'buttonDiv');
-					projectNameInput.setAttribute('id', 'aestheticInput');
-					
-					// Create the nsfw slider
-					const sliderDiv = document.createElement('div');
-					const label = document.createElement('label');
-					const checkInput = document.createElement('input');
-					const span = document.createElement('span');
-					const nsfwDiv = document.createElement('div');
-					const nsfwHeader = document.createElement('h3');
-
-					// Apply attributes to the NSFW slider
-					label.setAttribute('class', 'switch');
-					checkInput.setAttribute('type', 'checkbox');
-					checkInput.setAttribute('id', 'check');
-					span.setAttribute('class', 'slider round');
-					sliderDiv.setAttribute('id', 'sliderDiv');
-					nsfwDiv.setAttribute('id', 'nsfwDiv');
-					nsfwHeader.innerHTML = 'NSFW';
-
-					//append elements to the slider div
-					label.appendChild(checkInput);
-					label.appendChild(span);
-					sliderDiv.appendChild(label);
-					nsfwDiv.appendChild(sliderDiv);
-					nsfwDiv.appendChild(nsfwHeader);
-					
-					aestheticFour.style.display = 'flex';
-					aestheticFour.style.flexDirection = 'column';
-					submitButton.innerHTML = 'SUBMIT';
-					cancelButton.innerHTML = 'CANCEL';
-					
-
-					buttonDiv.appendChild(submitButton);
-					buttonDiv.appendChild(cancelButton)
-
-					aestheticImgFour.style.display = 'none';
-					aestheticFour.appendChild(projectNameInput);
-					aestheticFour.appendChild(nsfwDiv);
-					aestheticFour.appendChild(buttonDiv);
-					
-					const aestheticCreationButton = document.getElementById('aestheticCreationButton');
-					aestheticCreationButton.addEventListener('click', e => {
-						console.log(userRef);
-						console.log(projectNameInput.value);
-						userRef.update({
-							aestheticFour: projectNameInput.value,
-							aestheticFourExists: true
-						});
-						setTimeout(function () {
-							window.location.href = 'http://127.0.0.1:8080/html/aesthetic4.html'; //will redirect to your blog page (an ex: blog.html)
-					}, 2000); //will call the function after 2 secs.
-					});
-			}); 
-		}
-
-		if(aestheticFive){
-				aestheticImgFive.addEventListener('click', e => {
-					e.preventDefault();
-					let projectNameInput = document.createElement('input');
-					const submitButton = document.createElement('button');
-					const cancelButton = document.createElement('button');
-					const buttonDiv = document.createElement('div');
-
-					//apply attributes to the buttons and input
-					submitButton.setAttribute('id','aestheticCreationButton');
-					cancelButton.setAttribute('id','aestheticCancelButton');
-					buttonDiv.setAttribute('id', 'buttonDiv');
-					projectNameInput.setAttribute('id', 'aestheticInput');
-					
-					// Create the nsfw slider
-					const sliderDiv = document.createElement('div');
-					const label = document.createElement('label');
-					const checkInput = document.createElement('input');
-					const span = document.createElement('span');
-					const nsfwDiv = document.createElement('div');
-					const nsfwHeader = document.createElement('h3');
-
-					// Apply attributes to the NSFW slider
-					label.setAttribute('class', 'switch');
-					checkInput.setAttribute('type', 'checkbox');
-					checkInput.setAttribute('id', 'check');
-					span.setAttribute('class', 'slider round');
-					sliderDiv.setAttribute('id', 'sliderDiv');
-					nsfwDiv.setAttribute('id', 'nsfwDiv');
-					nsfwHeader.innerHTML = 'NSFW';
-
-					//append elements to the slider div
-					label.appendChild(checkInput);
-					label.appendChild(span);
-					sliderDiv.appendChild(label);
-					nsfwDiv.appendChild(sliderDiv);
-					nsfwDiv.appendChild(nsfwHeader);
-					
-					aestheticFive.style.display = 'flex';
-					aestheticFive.style.flexDirection = 'column';
-					submitButton.innerHTML = 'SUBMIT';
-					cancelButton.innerHTML = 'CANCEL';
-					
-
-					buttonDiv.appendChild(submitButton);
-					buttonDiv.appendChild(cancelButton)
-
-					aestheticImgFive.style.display = 'none';
-					aestheticFive.appendChild(projectNameInput);
-					aestheticFive.appendChild(nsfwDiv);
-					aestheticFive.appendChild(buttonDiv);
-					
-					const aestheticCreationButton = document.getElementById('aestheticCreationButton');
-					aestheticCreationButton.addEventListener('click', e => {
-						console.log(userRef);
-						console.log(projectNameInput.value);
-						userRef.update({
-							aestheticFive: projectNameInput.value,
-							aestheticFiveExists: true
-						});
-						setTimeout(function () {
-							window.location.href = 'http://127.0.0.1:8080/html/aesthetic5.html'; //will redirect to your blog page (an ex: blog.html)
-					}, 2000); //will call the function after 2 secs.
-					});
-			}); 
-		}
-
-		if(aestheticSix){
-				aestheticImgSix.addEventListener('click', e => {
-					e.preventDefault();
-					let projectNameInput = document.createElement('input');
-					const submitButton = document.createElement('button');
-					const cancelButton = document.createElement('button');
-					const buttonDiv = document.createElement('div');
-
-					//apply attributes to the buttons and input
-					submitButton.setAttribute('id','aestheticCreationButton');
-					cancelButton.setAttribute('id','aestheticCancelButton');
-					buttonDiv.setAttribute('id', 'buttonDiv');
-					projectNameInput.setAttribute('id', 'aestheticInput');
-					
-					// Create the nsfw slider
-					const sliderDiv = document.createElement('div');
-					const label = document.createElement('label');
-					const checkInput = document.createElement('input');
-					const span = document.createElement('span');
-					const nsfwDiv = document.createElement('div');
-					const nsfwHeader = document.createElement('h3');
-
-					// Apply attributes to the NSFW slider
-					label.setAttribute('class', 'switch');
-					checkInput.setAttribute('type', 'checkbox');
-					checkInput.setAttribute('id', 'check');
-					span.setAttribute('class', 'slider round');
-					sliderDiv.setAttribute('id', 'sliderDiv');
-					nsfwDiv.setAttribute('id', 'nsfwDiv');
-					nsfwHeader.innerHTML = 'NSFW';
-
-					//append elements to the slider div
-					label.appendChild(checkInput);
-					label.appendChild(span);
-					sliderDiv.appendChild(label);
-					nsfwDiv.appendChild(sliderDiv);
-					nsfwDiv.appendChild(nsfwHeader);
-					
-					aestheticSix.style.display = 'flex';
-					aestheticSix.style.flexDirection = 'column';
-					submitButton.innerHTML = 'SUBMIT';
-					cancelButton.innerHTML = 'CANCEL';
-					
-
-					buttonDiv.appendChild(submitButton);
-					buttonDiv.appendChild(cancelButton)
-
-					aestheticImgSix.style.display = 'none';
-					aestheticSix.appendChild(projectNameInput);
-					aestheticSix.appendChild(nsfwDiv);
-					aestheticSix.appendChild(buttonDiv);
-					
-					const aestheticCreationButton = document.getElementById('aestheticCreationButton');
-					aestheticCreationButton.addEventListener('click', e => {
-						console.log(userRef);
-						console.log(projectNameInput.value);
-						userRef.update({
-							aestheticSix: projectNameInput.value,
-							aestheticSixExists: true
-						});
-						setTimeout(function () {
-							window.location.href = 'http://127.0.0.1:8080/html/aesthetic6.html'; //will redirect to your blog page (an ex: blog.html)
-					}, 2000); //will call the function after 2 secs.
-					});
-			}); 
-		}
-
-		if(aestheticSeven){
-				aestheticImgSeven.addEventListener('click', e => {
-					e.preventDefault();
-					let projectNameInput = document.createElement('input');
-					const submitButton = document.createElement('button');
-					const cancelButton = document.createElement('button');
-					const buttonDiv = document.createElement('div');
-
-					//apply attributes to the buttons and input
-					submitButton.setAttribute('id','aestheticCreationButton');
-					cancelButton.setAttribute('id','aestheticCancelButton');
-					buttonDiv.setAttribute('id', 'buttonDiv');
-					projectNameInput.setAttribute('id', 'aestheticInput');
-					
-					// Create the nsfw slider
-					const sliderDiv = document.createElement('div');
-					const label = document.createElement('label');
-					const checkInput = document.createElement('input');
-					const span = document.createElement('span');
-					const nsfwDiv = document.createElement('div');
-					const nsfwHeader = document.createElement('h3');
-
-					// Apply attributes to the NSFW slider
-					label.setAttribute('class', 'switch');
-					checkInput.setAttribute('type', 'checkbox');
-					checkInput.setAttribute('id', 'check');
-					span.setAttribute('class', 'slider round');
-					sliderDiv.setAttribute('id', 'sliderDiv');
-					nsfwDiv.setAttribute('id', 'nsfwDiv');
-					nsfwHeader.innerHTML = 'NSFW';
-
-					//append elements to the slider div
-					label.appendChild(checkInput);
-					label.appendChild(span);
-					sliderDiv.appendChild(label);
-					nsfwDiv.appendChild(sliderDiv);
-					nsfwDiv.appendChild(nsfwHeader);
-					
-					aestheticSeven.style.display = 'flex';
-					aestheticSeven.style.flexDirection = 'column';
-					submitButton.innerHTML = 'SUBMIT';
-					cancelButton.innerHTML = 'CANCEL';
-					
-
-					buttonDiv.appendChild(submitButton);
-					buttonDiv.appendChild(cancelButton)
-
-					aestheticImgSeven.style.display = 'none';
-					aestheticSeven.appendChild(projectNameInput);
-					aestheticSeven.appendChild(nsfwDiv);
-					aestheticSeven.appendChild(buttonDiv);
-					
-					const aestheticCreationButton = document.getElementById('aestheticCreationButton');
-					aestheticCreationButton.addEventListener('click', e => {
-						console.log(userRef);
-						console.log(projectNameInput.value);
-						userRef.update({
-							aestheticSeven: projectNameInput.value,
-							aestheticSevenExists: true
-						});
-						setTimeout(function () {
-							window.location.href = 'http://127.0.0.1:8080/html/aesthetic7.html'; //will redirect to your blog page (an ex: blog.html)
-					}, 2000); //will call the function after 2 secs.
-					});
-			}); 
-		}
-
-		if(aestheticEight){
-				aestheticImgEight.addEventListener('click', e => {
-					e.preventDefault();
-					let projectNameInput = document.createElement('input');
-					const submitButton = document.createElement('button');
-					const cancelButton = document.createElement('button');
-					const buttonDiv = document.createElement('div');
-
-					//apply attributes to the buttons and input
-					submitButton.setAttribute('id','aestheticCreationButton');
-					cancelButton.setAttribute('id','aestheticCancelButton');
-					buttonDiv.setAttribute('id', 'buttonDiv');
-					projectNameInput.setAttribute('id', 'aestheticInput');
-					
-					// Create the nsfw slider
-					const sliderDiv = document.createElement('div');
-					const label = document.createElement('label');
-					const checkInput = document.createElement('input');
-					const span = document.createElement('span');
-					const nsfwDiv = document.createElement('div');
-					const nsfwHeader = document.createElement('h3');
-
-					// Apply attributes to the NSFW slider
-					label.setAttribute('class', 'switch');
-					checkInput.setAttribute('type', 'checkbox');
-					checkInput.setAttribute('id', 'check');
-					span.setAttribute('class', 'slider round');
-					sliderDiv.setAttribute('id', 'sliderDiv');
-					nsfwDiv.setAttribute('id', 'nsfwDiv');
-					nsfwHeader.innerHTML = 'NSFW';
-
-					//append elements to the slider div
-					label.appendChild(checkInput);
-					label.appendChild(span);
-					sliderDiv.appendChild(label);
-					nsfwDiv.appendChild(sliderDiv);
-					nsfwDiv.appendChild(nsfwHeader);
-					
-					aestheticEight.style.display = 'flex';
-					aestheticEight.style.flexDirection = 'column';
-					submitButton.innerHTML = 'SUBMIT';
-					cancelButton.innerHTML = 'CANCEL';
-					
-
-					buttonDiv.appendChild(submitButton);
-					buttonDiv.appendChild(cancelButton)
-
-					aestheticImgEight.style.display = 'none';
-					aestheticEight.appendChild(projectNameInput);
-					aestheticEight.appendChild(nsfwDiv);
-					aestheticEight.appendChild(buttonDiv);
-					
-					const aestheticCreationButton = document.getElementById('aestheticCreationButton');
-					aestheticCreationButton.addEventListener('click', e => {
-						console.log(userRef);
-						console.log(projectNameInput.value);
-						userRef.update({
-							aestheticEight: projectNameInput.value,
-							aestheticEightExists: true
-						});
-						setTimeout(function () {
-							window.location.href = 'http://127.0.0.1:8080/html/aesthetic8.html'; //will redirect to your blog page (an ex: blog.html)
-					}, 2000); //will call the function after 2 secs.
-					});
-			}); 
-		}
-
-		if(aestheticNine){
-				aestheticImgNine.addEventListener('click', e => {
-					e.preventDefault();
-					let projectNameInput = document.createElement('input');
-					const submitButton = document.createElement('button');
-					const cancelButton = document.createElement('button');
-					const buttonDiv = document.createElement('div');
-
-					//apply attributes to the buttons and input
-					submitButton.setAttribute('id','aestheticCreationButton');
-					cancelButton.setAttribute('id','aestheticCancelButton');
-					buttonDiv.setAttribute('id', 'buttonDiv');
-					projectNameInput.setAttribute('id', 'aestheticInput');
-					
-					// Create the nsfw slider
-					const sliderDiv = document.createElement('div');
-					const label = document.createElement('label');
-					const checkInput = document.createElement('input');
-					const span = document.createElement('span');
-					const nsfwDiv = document.createElement('div');
-					const nsfwHeader = document.createElement('h3');
-
-					// Apply attributes to the NSFW slider
-					label.setAttribute('class', 'switch');
-					checkInput.setAttribute('type', 'checkbox');
-					checkInput.setAttribute('id', 'check');
-					span.setAttribute('class', 'slider round');
-					sliderDiv.setAttribute('id', 'sliderDiv');
-					nsfwDiv.setAttribute('id', 'nsfwDiv');
-					nsfwHeader.innerHTML = 'NSFW';
-
-					//append elements to the slider div
-					label.appendChild(checkInput);
-					label.appendChild(span);
-					sliderDiv.appendChild(label);
-					nsfwDiv.appendChild(sliderDiv);
-					nsfwDiv.appendChild(nsfwHeader);
-					
-					aestheticNine.style.display = 'flex';
-					aestheticNine.style.flexDirection = 'column';
-					submitButton.innerHTML = 'SUBMIT';
-					cancelButton.innerHTML = 'CANCEL';
-					
-
-					buttonDiv.appendChild(submitButton);
-					buttonDiv.appendChild(cancelButton)
-
-					aestheticImgNine.style.display = 'none';
-					aestheticNine.appendChild(projectNameInput);
-					aestheticNine.appendChild(nsfwDiv);
-					aestheticNine.appendChild(buttonDiv);
-					
-					const aestheticCreationButton = document.getElementById('aestheticCreationButton');
-					aestheticCreationButton.addEventListener('click', e => {
-						console.log(userRef);
-						console.log(projectNameInput.value);
-						userRef.update({
-							aestheticNine: projectNameInput.value,
-							aestheticNineExists: true
-						});
-						setTimeout(function () {
-							window.location.href = 'http://127.0.0.1:8080/html/aesthetic9.html'; //will redirect to your blog page (an ex: blog.html)
-					}, 2000); //will call the function after 2 secs.
-					});
-			}); 
-		}
+		
 
 		if(window.location.href == 'http://127.0.0.1:8080/html/aesthetic1.html'){
 				db.collection('users').get().then(snapshot => {
@@ -1812,3 +1179,10 @@ firebase.auth().onAuthStateChanged(function(user) {
 	//});
 	//};
 })
+//get '/user/:username' run 
+//{
+    //var user = db.getUserByUsername(captureFromRoute.get('username'));
+   // var userTemplate = template.get('usertemplate');
+    //     userTemplate.populateWith(user.info());
+       //  return userTemplate
+//}
