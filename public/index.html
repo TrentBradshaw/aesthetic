@@ -1,0 +1,31 @@
+<!doctype html>
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Aesthetic</title>
+        <meta name="description" content="Aesthetic">
+        <meta name="Trent Bradshaw" content="Aesthetic">
+        <link rel="stylesheet" href="styles.css">
+        <script src="https://www.gstatic.com/firebasejs/5.5.7/firebase.js"></script>
+    </head>
+    
+    <body>
+        <header>
+            <H1>AESTHETIC</H1>
+        </header>
+        <div class = 'container'>
+            <div id = 'inputContainer'>
+                <input id = 'username' placeholder='username' class = 'authInputFields'>
+                <input id = 'txtEmail' type='email' placeholder='Email' class="authInputFields">
+                <input id = 'txtPassword' type="password" placeholder='password'class='authInputFields'>
+            </div>
+            <div id = 'authButtonsContainer'>
+                <button id='btnLogin' class='btn btn-action authButtons'>Log In</button>
+                <button id = 'btnSignUp'class = 'btn btn-secondary authButtons'>Sign Up</button>
+                <button id = 'btnLogout' class = 'btn btn-action hide authButtons'>Log Out</button>
+            </div>
+        </div>
+        <script src="main.js"></script>
+    </body>
+</html>

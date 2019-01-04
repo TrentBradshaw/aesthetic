@@ -1,0 +1,23 @@
+doctype html
+html(lang="en")
+	head
+		title Sign In
+		meta(charset='utf-8')
+		meta(name='viewport', content='Aesthetic')
+		link(rel='stylesheet' type="text/css" href="styles.css")
+		script(src='https://www.gstatic.com/firebasejs/5.5.7/firebase.js')
+	body
+		header
+			h1 AESTHETIC
+		div.container
+			div#inputContainer
+				button
+				h2 pickles
+				input#username(type='text' placeholder='username')
+				input#txtEmail.authInputFields(type='email' placeholder='email')
+				input#txtPassword.authInputFields(type='password' placeholder='password')
+			div#authButtonsContainer
+				button#btnLogin.btn.btn-action.authButtons Log In
+				button#btnSignUp.btn.btn-secondary.authButtons Sign Up
+				button#btnLogout.btn.btn-action.hide.authButtons Log Out
+		script(src="main.js")

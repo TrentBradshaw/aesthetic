@@ -1,0 +1,43 @@
+doctype html
+html(lang='eng')
+    head
+        meta(charset='utf-8')
+        link(rel ='stylesheet' type = 'text/css' href = 'http://localhost:5000/settings.css')
+        link(rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css')
+        script(src="https://www.gstatic.com/firebasejs/5.5.7/firebase.js")
+    body
+        header
+            div#profileHeader
+                div#leftHeaderNav
+                    a#homeAnchor.navAnchors
+                        span#home.headerNav home
+                    a#exploreAnchor.navAnchors(href='http://localhost:5000/explore')
+                        span#explore.headerNav explore
+                h2.headerNav AESTHETIC
+                div#rightHeaderNav
+                    span#profile.headerNav profile
+                    a(href="http://localhost:5000/settings")
+                        span#settings.headerNav settings
+                    span#profileDropDown.dropbtn
+                    a#btnLogout.btn.btn-action.hide Log out
+        div#settingsForm
+            div#twitterDiv.settingsContainer
+                img.socialMediaIcons(src="/twitter.png", alt="twitterIcon")
+                input#twitterURLInput(type="text")
+            div#instagramDiv.settingsContainer
+                img.socialMediaIcons(src="/instagram.png", alt="instagramIcon")
+                input#instagramURLInput(type="text")
+            div#facebookDiv.settingsContainer
+                img.socialMediaIcons(src="/facebook.png", alt="facebookIcon")
+                input#facebookURLInput(type="text")
+            div#redditDiv.settingsContainer
+                img.socialMediaIcons(src="/reddit.png", alt="redditIcon", srcset="")
+                input#redditURLInput(type="text")
+            div#youtubeDiv.settingsContainer
+                img.socialMediaIcons(src="/youtube.png", alt="youtubeIcon")
+                input#youtubeURLInput(type="text")
+            div#nsfwContentCheckDiv.settingsContainer
+                h3 Show NSFW Content?
+                input#nsfwCheckbox(type='checkbox')
+            button#settingsSubmit.settingsContainer Save
+        script(src="http://localhost:5000/main.js")

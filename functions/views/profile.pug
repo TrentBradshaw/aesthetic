@@ -1,0 +1,67 @@
+doctype html
+html(lang='en')
+    head
+        meta(charset='utf-8')
+        link(rel ='stylesheet' type = 'text/css' href = 'http://localhost:5000/profile.css')
+        
+        script(src="https://www.gstatic.com/firebasejs/5.5.7/firebase.js")
+    body#profileBody
+        header
+            div#profileHeader
+                div#leftHeaderNav
+                    a#homeAnchor.navAnchors
+                        span#home.headerElements.headerNav home
+                    a#exploreAnchor.headerElements.navAnchors(href='http://localhost:5000/explore')
+                        span#explore.headerElements.headerNav explore
+                h2#aestheticHeading.headerNav AESTHETIC
+                div#rightHeaderNav
+                    span#profile.headerElements.headerNav profile
+                    a(href="http://localhost:5000/settings")
+                        span#settings.headerNav settings
+                    span#profileDropDown.dropbtn
+                    a#btnLogout.btn.btn-action.hide Log out
+
+        div#profileContainer
+            div#profileCard
+                div#profilePicAndUsername
+                    img#profilePic(src="/backgrounds_solids_white_fabric_closeup.jpg", alt="plus-sign", srcset="")
+                    h4#usernameHeader #{username}
+                    button#followButton follow
+                    button#unfollowButton unfollow
+                div#profileStats
+                    div#aestheticStats
+                        span.profileStats aesthetics
+                        br
+                        span#aestheticNumb.profileStatsNumb 0
+                    div#followingStats
+                        span.profileStats following
+                        br
+                        span#followingNumb.profileStatsNumb 
+                    div#followersStats
+                        span.profileStats followers
+                        br
+                        span#followersNumb.profileStatsNumb 
+            div#profileCardDivider
+                a#twitterAnchor
+                    img#twitterImg.socialMediaIcons(src="/twitter.png")
+                a#instagramAnchor
+                    img#instagramImg.socialMediaIcons(src='/instagram.png')
+                a#facebookAnchor
+                    img#facebookImg.socialMediaIcons(src='/facebook.png')
+                a#redditAnchor
+                    img#redditImg.socialMediaIcons(src='/reddit.png')
+                a#youtubeAnchor
+                    img#youtubeImg.socialMediaIcons(src='/youtube.png')
+            div#mostLiked
+                div#mostLikedHeader
+                    h3 Most Liked Curations
+                ul#mostLikedList
+                    li.mostLikedListItem example1 likes: 221
+                    li.mostLikedListItem example2 likes: 211
+                    li.mostLikedListItem example3 likes: 50
+                    li.mostLikedListItem example4 likes: 35
+                    li.mostLikedListItem example5 likes: 10
+        div#aestheticContainer
+            div#createAesthetic
+                img#aestheticImg(src="/212203-200.png", alt="plus-sign")
+        script(src="http://localhost:5000/main.js")

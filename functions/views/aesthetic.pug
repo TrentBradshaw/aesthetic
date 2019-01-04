@@ -1,0 +1,41 @@
+doctype html
+html
+    head
+        title pickles
+        meta(charset='utf-8')
+        link(rel='stylesheet' type='text/css' href='http://localhost:5000/aesthetic.css')
+        script(src='https://www.gstatic.com/firebasejs/5.5.7/firebase.js')
+    body
+        header
+            div#profileHeader
+                div#leftHeaderNav
+                    a#homeAnchor.navAnchors
+                        span#home.headerNav home
+                    a#exploreAnchor.navAnchors(href='http://localhost:5000/explore')
+                        span#explore.headerNav explore
+
+                h2#aestheticHeading.headerNav AESTHETIC
+                div#rightHeaderNav
+                    span#profile.headerNav profile
+                    a(href="http://localhost:5000/settings")
+                        span#settings.headerNav settings
+                    span#profileDropDown.dropbtn
+                    a#btnLogout.btn.btn-action.hide Log out
+        div#aestheticManagementDiv
+            div#AestheticPageInfo
+                div#pageCredits
+                    h1#aestheticNamePassed #{aestheticName}
+                    h2 by
+                    h1#ownerOfAesthetic #{username}
+            div#aestheticInteractionDiv
+                div#aestheticInteractionButtonDiv
+                    button#like like
+                    button#share share
+                div#uploadAndProgress
+                    progress#uploader(value='0' max='100') 0%
+                    input#fileButton(type='file')
+                    button#aestheticSaveButton save
+        div#aestheticTagsContainer
+        div#photoContainer
+        div#photoContainerTwo
+        script(src='http://localhost:5000/main.js')

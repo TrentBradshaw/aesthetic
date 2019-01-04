@@ -1,0 +1,52 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>Aesthetic</title>
+  <meta name="description" content="Aesthetic">
+  <meta name="Trent Bradshaw" content="Aesthetic">
+
+  <link rel="stylesheet" href="/aesthetic/css/explore.css">
+ 
+  <script src="https://www.gstatic.com/firebasejs/5.5.7/firebase.js"></script>
+</head>
+<header class = 'header' id = 'header'>
+    <h1 id='exploreHeader'>EXPLORE</h1>
+</header>
+<body>
+
+
+
+
+
+
+
+
+<iframe src="http://127.0.0.1:8080/html/aesthetic1.html"></iframe>
+
+
+
+
+
+
+
+
+
+
+    <script>
+        var config = {
+            apiKey: "AIzaSyCjZZJ2rNAzKgkZ9ioE0UeufR3W3RSDN1Y",
+            authDomain: "walrusaesthetic.firebaseapp.com",
+            databaseURL: "https://walrusaesthetic.firebaseio.com",
+            projectId: "walrusaesthetic",
+            storageBucket: "walrusaesthetic.appspot.com",
+            messagingSenderId: "264200815299"
+          };
+        firebase.initializeApp(config);
+        const db = firebase.firestore();
+        db.settings({ timestampsInSnapshots: true }); 
+    </script>
+    <script src="/aesthetic/js/main.js"></script>
+</body>
