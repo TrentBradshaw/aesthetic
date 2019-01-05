@@ -10,16 +10,15 @@ html(lang='en')
             div#profileHeader
                 div#leftHeaderNav
                     a#homeAnchor.navAnchors
-                        span#home.headerElements.headerNav home
+                        span#home.headerElements home
                     a#exploreAnchor.headerElements.navAnchors(href='http://localhost:5000/explore')
-                        span#explore.headerElements.headerNav explore
-                h2#aestheticHeading.headerNav AESTHETIC
+                        span#explore.headerElements explore
+                h2#aestheticHeading AESTHETIC
                 div#rightHeaderNav
-                    span#profile.headerElements.headerNav profile
-                    a(href="http://localhost:5000/settings")
-                        span#settings.headerNav settings
-                    span#profileDropDown.dropbtn
-                    a#btnLogout.btn.btn-action.hide Log out
+                    a#settingsAnchor.headerElements.navAnchors(href="http://localhost:5000/settings")
+                        span#settings.headerElements settings
+                    span#profileDropDown.dropbtn.navAnchors
+                    a#btnLogout.btn.btn-action.hide.headerElements.navAnchors Log out
 
         div#profileContainer
             div#profileCard
@@ -52,16 +51,7 @@ html(lang='en')
                     img#redditImg.socialMediaIcons(src='/reddit.png')
                 a#youtubeAnchor
                     img#youtubeImg.socialMediaIcons(src='/youtube.png')
-            div#mostLiked
-                div#mostLikedHeader
-                    h3 Most Liked Curations
-                ul#mostLikedList
-                    li.mostLikedListItem example1 likes: 221
-                    li.mostLikedListItem example2 likes: 211
-                    li.mostLikedListItem example3 likes: 50
-                    li.mostLikedListItem example4 likes: 35
-                    li.mostLikedListItem example5 likes: 10
         div#aestheticContainer
             div#createAesthetic
-                img#aestheticImg(src="/212203-200.png", alt="plus-sign")
+                button#aestheticImg Create Aesthetic
         script(src="http://localhost:5000/main.js")

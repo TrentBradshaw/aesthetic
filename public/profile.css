@@ -10,6 +10,18 @@
 a {
     text-decoration: none;
 }
+#unfollowButton {
+    width: 50%;
+    margin: 0% 25% 5%;
+    border-radius: 1px;
+    border: none;
+}
+#followButton {
+    width: 50%;
+    margin: 0% 25% 5%;
+    border-radius: 1px;
+    border: none;
+}
 
 #profileHeader{
     display: flex;
@@ -42,13 +54,6 @@ a {
     justify-content: space-around;
 }
 
-#btnLogout {
-    width: 100px;
-    height: 30px;
-    margin-top: 9px;
-    background-color: lightgrey;
-}
-
 #aestheticHeading{
     margin: 0;
     padding: 0;
@@ -62,9 +67,8 @@ a {
 
 /* Dropdown Button */
 .dropbtn {
-    background-color: lightgrey;
-    color: white;
-    padding: 16px;
+    background-color: white;
+    color: black;
     font-size: 16px;
     border: none;
   }
@@ -112,12 +116,12 @@ a {
 #profilePic {
     height: 300px;
     width: 215px;
-    margin-top: 5%;
-    border-radius: 15px;
+    border-radius: 10px;
 }
 
 #profileCard{
     border: 1px solid #38444d;
+    border-radius: 10px 10px 0px 0px;
 }
 
 #profileContainer {
@@ -126,14 +130,11 @@ a {
     margin-top: 1%;
     background-color: #15202b;
     border: 1px solid #38444d;
+    border-radius: 10px 10px 10px 10px;
 }
 
 .socialMediaIcons{
     height: 30px;
-}
-
-#profileCardDivider{
-    height: 100px;
 }
 
 #mostLiked {
@@ -163,7 +164,7 @@ a {
     display: flex;
     flex-direction: column;
     margin-left: 7px;
-    height: 200px;
+    height: 5em;
     width: 95%;
 }
 
@@ -193,7 +194,7 @@ a {
 
 #aestheticContainer {
     border-radius: 10px;
-    margin-right: 2%;
+    margin-right: 5%;
     background-color: lightcyan;
     margin-top: 1%;
     float: right;
@@ -211,13 +212,8 @@ a {
     height: 30px;
     margin-top: 10%;
 }
-
-#aestheticImgOne {
-    opacity: 0;
-}
-  
-#aestheticImgOne:hover{
-opacity: 1;
+#aestheticImg {
+    height: 100%;
 }
 
 .hoverImage :hover {
@@ -331,7 +327,7 @@ input:checked + .slider:before {
 
 .portraitContainer {
     width: 55%;
-    margin-left: 25%;
+    margin-left: 22.5%;
     height: 800px;
 }
   
@@ -355,7 +351,7 @@ input:checked + .slider:before {
 }
 .landscapeContainer {
     width: 85%;
-    margin-left: 10%;
+    margin-left: 8%;
     height: auto;
 }
 

@@ -25,19 +25,13 @@ const auth = firebase.auth();
 
 // todo add an option for a 30s music file to accompany the aesthetic to better capture the essence trying to be conveyed
 
-// todo -- make each aesthetic have a unique id and make it accessible to the file uploader so it can store the files properly.
 // todo -- make functions for code to eliminate scope issues
-// todo -- make AestheticExists: True present in the firestore database if the project is submitted, then display
-//	the submitted project in a preview where the create project div normally is
-//	todo -- if doc.data().aestheticExists = true{
-// reshape the divs in profile to preview the aesthetic page
 //	todo add social media to the profilecarddevider div with small icons for facebook twitter instagram
 //	todo swap around the user's profile page with a timeline
 //	todo move the current profile pug to their profile page
 //	todo let an mp4 be hosted as a gif if the file extension is a .mp4 or .mkv
 // Grab the different elements frpm the page where aesthetics are created
 //	todo fix all casing issues and make sure to handle cases in input so there are no issues like if(username === Username) issues
-// todo -- make sure to load previews based on orientation, a portrait gets it's own space with a portrait style preview div
 const usernameHeader = document.getElementById('usernameHeader');
 const uploader = document.getElementById('uploader');
 const fileButton = document.getElementById('fileButton');
