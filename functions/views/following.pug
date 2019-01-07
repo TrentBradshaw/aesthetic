@@ -1,0 +1,28 @@
+doctype html
+html
+    head
+        title pickles
+        meta(charset='utf-8')
+        link(rel='stylesheet' type='text/css' href='http://localhost:5000/aesthetic.css')
+        script(src='https://www.gstatic.com/firebasejs/5.5.7/firebase.js')
+    body
+        header
+            div#profileHeader
+                div#leftHeaderNav
+                    a#homeAnchor.navAnchors
+                        span#home.headerNav home
+                    a#exploreAnchor.navAnchors(href='http://localhost:5000/explore')
+                        span#explore.headerNav explore
+
+                h2#aestheticHeading.headerNav AESTHETIC
+                div#rightHeaderNav
+                    span#profile.headerNav profile
+                    a(href="http://localhost:5000/settings")
+                        span#settings.headerNav settings
+                    span#profileDropDown.dropbtn
+                    a#btnLogout.btn.btn-action.hide Log out
+        div#followingDiv
+            h1#nameOfPersonFollowing #{username}
+            h2 is following
+            div#followingContainer
+        script(src="http://localhost:5000/main.js")

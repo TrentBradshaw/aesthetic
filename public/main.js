@@ -26,19 +26,22 @@ const auth = firebase.auth();
 // todo add an option for a 30s music file to accompany the aesthetic to better capture the essence trying to be conveyed
 
 // todo -- make functions for code to eliminate scope issues
-//	todo add social media to the profilecarddevider div with small icons for facebook twitter instagram
 //	todo swap around the user's profile page with a timeline
 //	todo move the current profile pug to their profile page
 //	todo let an mp4 be hosted as a gif if the file extension is a .mp4 or .mkv
-// Grab the different elements frpm the page where aesthetics are created
+// Grab the different elements from the page where aesthetics are created
 //	todo fix all casing issues and make sure to handle cases in input so there are no issues like if(username === Username) issues
 const usernameHeader = document.getElementById('usernameHeader');
 const uploader = document.getElementById('uploader');
+const followingAnchor = document.getElementById('followingAnchor');
 const fileButton = document.getElementById('fileButton');
 const aestheticSpecsContainer = document.getElementById('aestheticSpecsContainer');
 const settingsForm = document.getElementById('settingsForm');
 const currentUser = document.getElementById('profileDropDown');
-
+const followingDiv = document.getElementById('followingDiv');
+const profilePic = document.getElementById('profilePic');
+const profilePicFileButton = document.getElementById('profilePicFileButton');
+const profilePicProgress = document.getElementById('profilePicProgress');
 // eslint-disable-next-line max-len
 const aestheticInteractionDiv = document.getElementById('aestheticInteractionDiv');
 const searchBar = document.getElementById('searchBar');
@@ -701,28 +704,81 @@ firebase.auth().onAuthStateChanged((user) => {
 		}
 		function logSettings() {
 			const twitterURLInput = document.getElementById('twitterURLInput');
-					const instagramURLInput = document.getElementById('instagramURLInput');
-					const facebookURLInput = document.getElementById('facebookURLInput');
-					const redditURLInput = document.getElementById('redditURLInput');
-					const youtubeURLInput = document.getElementById('youtubeURLInput');
-					const nsfwContentCheck = document.getElementById('nsfwCheckbox');
-					const settingsSubmitButton = document.getElementById('settingsSubmit');
-					console.log(user.uid);
-					settingsSubmitButton.addEventListener('click', () => {
-						db.collection('users').get().then(snapshot => {
-							snapshot.docs.forEach(doc =>{
-								if (doc.data().userID === user.uid) {
-									db.collection('users').doc(user.uid).update({
-									twitterUrl: twitterURLInput.value,
-									instagramUrl: instagramURLInput.value,
-									facebookUrl: facebookURLInput.value,
-									redditUrl: redditURLInput.value,
-									youtubeUrl: youtubeURLInput.value,
-								});
+			const instagramURLInput = document.getElementById('instagramURLInput');
+			const facebookURLInput = document.getElementById('facebookURLInput');
+			const redditURLInput = document.getElementById('redditURLInput');
+			const youtubeURLInput = document.getElementById('youtubeURLInput');
+			const nsfwContentCheck = document.getElementById('nsfwCheckbox');
+			const settingsSubmitButton = document.getElementById('settingsSubmit');
+			console.log(user.uid);
+			settingsSubmitButton.addEventListener('click', () => {
+				db.collection('users').get().then(snapshot => {
+					snapshot.docs.forEach(doc =>{
+						if (doc.data().userID === user.uid) {
+							db.collection('users').doc(user.uid).update({
+							twitterUrl: twitterURLInput.value,
+							instagramUrl: instagramURLInput.value,
+							facebookUrl: facebookURLInput.value,
+							redditUrl: redditURLInput.value,
+							youtubeUrl: youtubeURLInput.value,
+						});
+						}
+					});
+				});
+			});
+			if (profilePicFileButton) {
+				profilePicFileButton.addEventListener('change', (e) => {
+					console.log('change');
+					db.collection('users').get().then(snapshot => {
+						snapshot.docs.forEach(doc => {
+							if (doc.data().userID === user.uid) {
+								console.log('im in there dawg');
+								// eslint-disable-next-line no-inner-declarations
+								function progress(snapshot) {
+									const percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+									profilePicProgress.value = percentage;
+								}
+								// eslint-disable-next-line no-inner-declarations
+								function error(err) {
+									const errorMessage = err.message;
+									const errorCode = err.code;
+									// console.log(errorMessage,errorCode);
+								}
+
+								// eslint-disable-next-line no-inner-declarations
+								function complete() {
+									console.log('profilePicDone');
+
+									// eslint-disable-next-line promise/no-nesting
+									console.log('after url request');
+									profilePicRef.getDownloadURL().then((url) => {
+										db.collection('users').doc(user.uid).update({
+											profilePic: url,
+										});
+									});
+								}
+								console.log(user.uid);
+								console.log(doc.data());
+								// const aestheticNameUpdated = doc.data().aesthetic;
+								// console.log(aestheticNameUpdated)
+								// get file
+								let file = e.target.files[0];
+								console.log(file);
+								const filename = file.name;
+								// create storage ref
+								 let profilePicRef = storageService.ref(user.uid + '/profile_picture' + filename);
+
+								// upload file
+								 let task = profilePicRef.put(file);
+								console.log(filename);
+
+								// update progress bar
+								task.on('state_changed', progress, error, complete);
 								}
 							});
 						});
 					});
+			}
 		}
 		function listenForEdit() {
 			console.log('aestheticInteractionDiv');
@@ -998,12 +1054,12 @@ firebase.auth().onAuthStateChanged((user) => {
 			xhr.open('POST', 'http://localhost:5000');
 			xhr.setRequestHeader('Content-Type', 'application/json');
 			xhr.onload = function() {
-			console.log('Signed in as: ' + xhr.responseText);
 			};
 			db.collection('users').get().then(snapshot =>{
 				snapshot.docs.forEach(doc =>{
 					if (doc.data().userID === user.uid) {
 						xhr.send(JSON.stringify({'idtoken': idToken, 'uid': user.uid, 'username': doc.data().username}));
+						console.log('Signed in as: ' + doc.data().username);
 					}
 				});
 			});
@@ -1030,7 +1086,6 @@ firebase.auth().onAuthStateChanged((user) => {
 		if (profileHeader) {
 			checkIfProfileIsOwnedByOwner();
 		}
-
 		if (aestheticInteractionDiv) {
 			// listen for file selection
 			document.addEventListener('DOMContentLoaded', function(event) {
@@ -1041,26 +1096,38 @@ firebase.auth().onAuthStateChanged((user) => {
 			listenForEdit();
 			showCurrentAestheticFiles();
 		}
-		console.log('before aestheticInteractionDiv');
 		// todo use an equation to read the size of the monitor the person has and then read images and then resize the images for their monitor
-	// todo add a resizing option for portrait and landscape
-	// todo when loading the aesthetic previews, display the portrait ones with a portrait preview and the landscape ones with a landscape preview
-	if (usernameHeader) { // if the username header on the profile page exists
-		// todo make followers and following update in realtime
-		checkIfFollowing();
-		if (followBtn) {
-			follow();
+		if (usernameHeader) { // if the username header on the profile page exists
+			// todo make followers and following update in realtime
+			const followingUrl = 'http://localhost:5000/user/' + usernameHeader.innerHTML.toLowerCase() + '/following';
+			followingAnchor.setAttribute('href', followingUrl);
+			checkIfFollowing();
+			if (followBtn) {
+				follow();
+			}
+			// todo fix not updating the number of followers
+			if (unfollowButton) {
+				unfollow();
+			}
+			loadProfileAestheticPreview();
+			db.collection('users').get().then(snapshot => {
+				snapshot.docs.forEach(doc =>{
+					if (doc.data().username.toLowerCase() === usernameHeader.innerHTML.toLowerCase()) {
+						profilePic.setAttribute('src', doc.data().profilePic);
+					}
+				});
+			});
 		}
-		// todo fix not updating the number of followers
-		if (unfollowButton) {
-			unfollow();
-		}
-		loadProfileAestheticPreview();
-	}
 
-	if (exploreContainer) {
+		if (exploreContainer) {
 		populateSearches();
-	}
+		}
+		if (followingDiv) {
+			console.log('hello');
+			const nameOfPersonFollowing = document.getElementById('nameOfPersonFollowing');
+			const nameOfPersonFollowingValue = nameOfPersonFollowing.innerHTML.toLowerCase();
+			console.log('name ' + nameOfPersonFollowingValue);
+		}
 	} else {
 		console.log('user not signed in');
 	}

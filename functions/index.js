@@ -35,14 +35,16 @@ app.post('/', jsonBodyParser, (req,res) =>{
   console.log(req.body.username)
   res.send(req.body.userid);
   app.locals.userid = req.body.uid;
-})
+});
 console.log("applocalsid"  + app.locals.userid)
 app.get('/', jsonBodyParser,  (req,res) =>{
   res.send("params" + req.params)
   res.send(req.header.idToken)
   console.log(req.idToken)
-})
-
+});
+app.get('/user/:username/following', (req, res) => {
+  res.render('following', {username:req.params.username});
+});
 app.get('/profile', (req, res) =>{
 res.render('profile');
 });
