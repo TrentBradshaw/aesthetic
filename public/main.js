@@ -414,6 +414,195 @@ function manageUserInfo(user) {
 	});
 }
 
+function populateSearches() {
+	searchButton.addEventListener('click', () =>{
+		const tagToSearch = searchBar.value;
+		console.log(tagToSearch);
+		db.collection('users').get().then(snapshot => {
+			snapshot.docs.forEach(doc =>{
+				console.log(doc.data());
+				db.collection('users').doc(doc.data().userID).collection('aesthetics').get().then(snapshot => { // cycle throught the aesthetics collection
+					snapshot.docs.forEach(doc => {
+						console.log(doc.data());
+						if (doc.data().aestheticExists === true) {
+							let i;
+							for (i = 0; i < doc.data().aestheticTags.length; i++) {
+								console.log(doc.data().aestheticTags[0]);
+								if (tagToSearch === doc.data().aestheticTags[i]) {
+									console.log('Yata!');
+									let exploreAestheticToLoad = doc.data().aestheticName;  // aestheticfullishtest            //current aesthetic is equal to the current aesthetic in the loop
+									const exploreAestheticToLoadUserId = doc.data().userID;
+									const exploreAestheticDiv = document.createElement('div');                          // create a div
+									const exploreAestheticText = document.createElement('h3');
+									exploreAestheticText.setAttribute('class', 'exploreAestheticPreviewText');                      // create an h3
+									const aestheticAnchor = document.createElement('a'); 		                        // create an anchor for redirect
+									exploreAestheticDiv.setAttribute('class', 'exploreProfilePreview');                // give the div a class for styling
+									exploreAestheticText.innerHTML = exploreAestheticToLoad;                                  // make the h3's match the current aesthetic name in the cycle
+									console.log(exploreAestheticToLoad);												        // aestheticfullishtest
+									aestheticAnchor.appendChild(exploreAestheticText);                                  // append the h3 to the anchor element
+									exploreAestheticDiv.appendChild(aestheticAnchor);                                   // append the anchor element to the div
+									exploreContainer.appendChild(exploreAestheticDiv);
+									db.collection('users').doc(exploreAestheticToLoadUserId).collection('aesthetics').get().then(snapshot => { // cycle throught the aesthetics collection
+										snapshot.docs.forEach(doc => {
+											console.log(doc.data());
+											if (doc.data().aestheticName === exploreAestheticToLoad) {  // if the name of the document's aestheticName value is equal to the current aesthetic
+												console.log('dd1' + doc.data());
+												let storageRefForExplorePreview = storageService.ref('/' + doc.data().userID + '/' +  exploreAestheticToLoad + '/' + doc.data().aestheticFileNames[1]);
+												console.log('inside doc');
+												storageRefForExplorePreview.getDownloadURL().then((url) => {
+													const exploreAestheticPreviewImg = document.createElement('img'); // create an image
+													if (doc.data().portrait === true) {
+														exploreAestheticPreviewImg.setAttribute('width', '30%');
+													}
+													if (doc.data().landscape === true) {
+														exploreAestheticPreviewImg.setAttribute('width', '60%');
+													}
+													exploreAestheticPreviewImg.setAttribute('src', url);
+													exploreAestheticPreviewImg.setAttribute('id', doc.data().aestheticFileNames[0]);
+													exploreAestheticPreviewImg.setAttribute('class', 'previewImg');
+													exploreAestheticPreviewImg.style.objectFit = 'cover';
+													exploreAestheticPreviewImg.setAttribute('class', 'exploreAestheticPreviewImg');
+													exploreAestheticDiv.appendChild(exploreAestheticPreviewImg);
+													aestheticAnchor.setAttribute('href', doc.data().url);
+													console.log('url acquired');
+													console.log('url : ' + url);
+												});
+											}
+										});
+									}).catch((error) => {
+										const errorCode = error.code;
+										const errorMessage = error.message;
+										// console.log(errorMessage, errorCode)
+									});
+								}
+							}
+						}
+					});
+				});
+			});
+		});
+	});
+}
+
+function unfollow() {
+	unfollowButton.addEventListener('click', () =>{
+		console.log(usernameHeader.innerHTML.toLowerCase());
+		console.log('buttonclickedunfollow');
+		db.collection('users').get().then(snapshot =>{
+			snapshot.docs.forEach(doc =>{
+				console.log(doc.data());
+				if (doc.data().username.toLowerCase() === usernameHeader.innerHTML.toLowerCase()) {
+					const personUnfollowing = document.getElementById('profileDropDown');
+					console.log(doc.data());
+					const pageOwnerUid = doc.data().userID;
+					console.log(pageOwnerUid);
+					const followersArrayForManipulation = doc.data().followersArray;
+					console.log(followersArrayForManipulation);
+					let i;
+					for (i = 0; i < followersArrayForManipulation.length; i++) {
+						console.log('im in there dawg');
+						console.log(followersArrayForManipulation[i]);
+						console.log(usernameHeader.innerHTML.toLowerCase());
+						if (followersArrayForManipulation[i] === personUnfollowing.innerHTML.toLowerCase()) {
+							console.log(followersArrayForManipulation);
+							followersArrayForManipulation.splice(i, 1);
+							console.log(followersArrayForManipulation);
+							db.collection('users').doc(pageOwnerUid).update({
+								followersArray: followersArrayForManipulation,
+								followers: doc.data().followers - 1,
+							});
+							db.collection('users').get().then(snapshot => {
+								snapshot.docs.forEach(doc =>{
+									if (doc.data().username.toLowerCase() === personUnfollowing.innerHTML.toLowerCase()) {
+										console.log('userdoc' + doc.data());
+										const followingArrayForManipulation = doc.data().followingArray;
+										console.log(followingArrayForManipulation);
+										let i;
+										for (i = 0; i < followingArrayForManipulation.length; i++) {
+											console.log(followingArrayForManipulation[i]);
+											console.log(usernameHeader.innerHTML.toLowerCase());
+											if (followingArrayForManipulation[i] === usernameHeader.innerHTML.toLowerCase()) {
+												console.log(followingArrayForManipulation[i]);
+												followingArrayForManipulation.splice(i, 1);
+												db.collection('users').doc(doc.data().userID).update({
+													followingArray: followingArrayForManipulation,
+													followers: doc.data().following - 1,
+												});
+											}
+										}
+									}
+								});
+							});
+						}
+					}
+				}
+			});
+		followBtn.style.display = 'block';
+		unfollowButton.style.display = 'none';
+		});
+	});
+}
+function follow() {
+	console.log('followBtn');
+			followBtn.addEventListener('click', () => {
+				// const pageToFollowValue = pageToFollow.innerHTML.toLowerCase();
+				// const userUserNameValue = userUserName.innerHTML.toLowerCase();
+					db.collection('users').get().then(snapshot =>{
+						snapshot.docs.forEach(doc => {
+							const userUsername = document.getElementById('profileDropDown');
+							if (doc.data().username.toLowerCase() === userUsername.innerHTML.toLowerCase()) {
+								db.collection('users').doc(doc.data().userID).update({
+									followingArray: firebase.firestore.FieldValue.arrayUnion(usernameHeader.innerHTML.toLowerCase()),
+									following: doc.data().following + 1,
+								});
+								console.log('follwingAdded');
+							}
+						});
+					});
+					db.collection('users').get().then(snapshot =>{
+						snapshot.docs.forEach(doc =>{
+							if (doc.data().username.toLowerCase() === usernameHeader.innerHTML.toLowerCase()) {
+								const pageOwnerUid = doc.data().userID;
+								const userUsername = document.getElementById('profileDropDown');
+								db.collection('users').doc(pageOwnerUid).update({
+									followersArray: firebase.firestore.FieldValue.arrayUnion(userUsername.innerHTML.toLowerCase()),
+									followers: doc.data().followers + 1,
+								});
+								console.log('followerAdded');
+							}
+						});
+					});
+				console.log('changingInnerHTML');
+				followBtn.style.display = 'none';
+				unfollowButton.style.display = 'block';
+			});
+}
+
+function logSettings() {
+	const twitterURLInput = document.getElementById('twitterURLInput');
+			const instagramURLInput = document.getElementById('instagramURLInput');
+			const facebookURLInput = document.getElementById('facebookURLInput');
+			const redditURLInput = document.getElementById('redditURLInput');
+			const youtubeURLInput = document.getElementById('youtubeURLInput');
+			const nsfwContentCheck = document.getElementById('nsfwCheckbox');
+			const settingsSubmitButton = document.getElementById('settingsSubmit');
+			console.log(user.uid);
+			settingsSubmitButton.addEventListener('click', () => {
+				db.collection('users').get().then(snapshot => {
+					snapshot.docs.forEach(doc =>{
+						if (doc.data().userID === user.uid) {
+							db.collection('users').doc(user.uid).update({
+							twitterUrl: twitterURLInput.value,
+							instagramUrl: instagramURLInput.value,
+							facebookUrl: facebookURLInput.value,
+							redditUrl: redditURLInput.value,
+							youtubeUrl: youtubeURLInput.value,
+						});
+						}
+					});
+				});
+			});
+}
 // FIREBASE AUTHENTICATION STATE CHANGE
 firebase.auth().onAuthStateChanged((user) => {
 	if (user) {
@@ -451,29 +640,7 @@ firebase.auth().onAuthStateChanged((user) => {
 		}
 
 		if (settingsForm) {
-			const twitterURLInput = document.getElementById('twitterURLInput');
-			const instagramURLInput = document.getElementById('instagramURLInput');
-			const facebookURLInput = document.getElementById('facebookURLInput');
-			const redditURLInput = document.getElementById('redditURLInput');
-			const youtubeURLInput = document.getElementById('youtubeURLInput');
-			const nsfwContentCheck = document.getElementById('nsfwCheckbox');
-			const settingsSubmitButton = document.getElementById('settingsSubmit');
-
-			settingsSubmitButton.addEventListener('click', () => {
-				db.collection('users').get().then(snapshot => {
-					snapshot.docs.forEach(doc =>{
-						if (doc.data().userID === user.uid) {
-							db.collection('users').doc(user.uid).update({
-							twitterUrl: twitterURLInput.value,
-							instagramUrl: instagramURLInput.value,
-							facebookUrl: facebookURLInput.value,
-							redditUrl: redditURLInput.value,
-							youtubeUrl: youtubeURLInput.value,
-						});
-						}
-					});
-				});
-			});
+			logSettings();
 		}
 
 		if (profileHeader) {
@@ -761,98 +928,11 @@ firebase.auth().onAuthStateChanged((user) => {
 			});
 		});
 		if (followBtn) {
-			console.log('followBtn');
-			followBtn.addEventListener('click', () => {
-				// const pageToFollowValue = pageToFollow.innerHTML.toLowerCase();
-				// const userUserNameValue = userUserName.innerHTML.toLowerCase();
-					db.collection('users').get().then(snapshot =>{
-						snapshot.docs.forEach(doc => {
-							const userUsername = document.getElementById('profileDropDown');
-							if (doc.data().username.toLowerCase() === userUsername.innerHTML.toLowerCase()) {
-								db.collection('users').doc(doc.data().userID).update({
-									followingArray: firebase.firestore.FieldValue.arrayUnion(usernameHeader.innerHTML.toLowerCase()),
-									following: doc.data().following + 1,
-								});
-								console.log('follwingAdded');
-							}
-						});
-					});
-					db.collection('users').get().then(snapshot =>{
-						snapshot.docs.forEach(doc =>{
-							if (doc.data().username.toLowerCase() === usernameHeader.innerHTML.toLowerCase()) {
-								const pageOwnerUid = doc.data().userID;
-								const userUsername = document.getElementById('profileDropDown');
-								db.collection('users').doc(pageOwnerUid).update({
-									followersArray: firebase.firestore.FieldValue.arrayUnion(userUsername.innerHTML.toLowerCase()),
-									followers: doc.data().followers + 1,
-								});
-								console.log('followerAdded');
-							}
-						});
-					});
-				console.log('changingInnerHTML');
-				followBtn.style.display = 'none';
-				unfollowButton.style.display = 'block';
-			});
+			follow();
 		}
 // todo fix not updating the number of followers
 		if (unfollowButton) {
-			unfollowButton.addEventListener('click', () =>{
-				console.log(usernameHeader.innerHTML.toLowerCase());
-				console.log('buttonclickedunfollow');
-				db.collection('users').get().then(snapshot =>{
-					snapshot.docs.forEach(doc =>{
-						console.log(doc.data());
-						if (doc.data().username.toLowerCase() === usernameHeader.innerHTML.toLowerCase()) {
-							const personUnfollowing = document.getElementById('profileDropDown');
-							console.log(doc.data());
-							const pageOwnerUid = doc.data().userID;
-							console.log(pageOwnerUid);
-							const followersArrayForManipulation = doc.data().followersArray;
-							console.log(followersArrayForManipulation);
-							let i;
-							for (i = 0; i < followersArrayForManipulation.length; i++) {
-								console.log('im in there dawg');
-								console.log(followersArrayForManipulation[i]);
-								console.log(usernameHeader.innerHTML.toLowerCase());
-								if (followersArrayForManipulation[i] === personUnfollowing.innerHTML.toLowerCase()) {
-									console.log(followersArrayForManipulation);
-									followersArrayForManipulation.splice(i, 1);
-									console.log(followersArrayForManipulation);
-									db.collection('users').doc(pageOwnerUid).update({
-										followersArray: followersArrayForManipulation,
-										followers: doc.data().followers - 1,
-									});
-									db.collection('users').get().then(snapshot => {
-										snapshot.docs.forEach(doc =>{
-											if (doc.data().username.toLowerCase() === personUnfollowing.innerHTML.toLowerCase()) {
-												console.log('userdoc' + doc.data());
-												const followingArrayForManipulation = doc.data().followingArray;
-												console.log(followingArrayForManipulation);
-												let i;
-												for (i = 0; i < followingArrayForManipulation.length; i++) {
-													console.log(followingArrayForManipulation[i]);
-													console.log(usernameHeader.innerHTML.toLowerCase());
-													if (followingArrayForManipulation[i] === usernameHeader.innerHTML.toLowerCase()) {
-														console.log(followingArrayForManipulation[i]);
-														followingArrayForManipulation.splice(i, 1);
-														db.collection('users').doc(doc.data().userID).update({
-															followingArray: followingArrayForManipulation,
-															followers: doc.data().following - 1,
-														});
-													}
-												}
-											}
-										});
-									});
-								}
-							}
-						}
-					});
-				followBtn.style.display = 'block';
-				unfollowButton.style.display = 'none';
-				});
-			});
+			unfollow();
 		}
 		// create and add the previews for a user's aesthetics on their profile with the aestheticname, url, and a preview picture
 		const aestheticPreviewContainer = document.createElement('div');
@@ -875,33 +955,39 @@ firebase.auth().onAuthStateChanged((user) => {
 					const profileUserId = doc.data().userID;                                                // then the userID value of that document belongs to the page owner
 					const profileAestheticsToLoad = doc.data().userAestheticList;                           // grab the owner's list of aesthetics
 					console.log(profileAestheticsToLoad);
-
+					console.log('help');
+					console.log(lowerUsername);
+					console.log('yeet');
 					db.collection('users').get().then(snapshot => {
 						snapshot.docs.forEach(doc =>{
-							const twitterAnchor = document.getElementById('twitterAnchor');
-							twitterAnchor.setAttribute('target', '_blank');
-							const redditAnchor = document.getElementById('redditAnchor');
-							redditAnchor.setAttribute('target', '_blank');
-							const instagramAnchor = document.getElementById('instagramAnchor');
-							instagramAnchor.setAttribute('target', '_blank');
-							const youtubeAnchor = document.getElementById('youtubeAnchor');
-							youtubeAnchor.setAttribute('target', '_blank');
-							const facebookAnchor = document.getElementById('facebookAnchor');
-							facebookAnchor.setAttribute('target', '_blank');
-							if (doc.data().twitterUrl !== 'Please Enter our URL') {
-								twitterAnchor.setAttribute('href', doc.data().twitterUrl);
-							}
-							if (doc.data().instagramUrl !== 'Please Enter our URL') {
-								instagramAnchor.setAttribute('href', doc.data().instagramUrl);
-							}
-							if (doc.data().facebookUrl !== 'Please Enter our URL') {
-								facebookAnchor.setAttribute('href', doc.data().facebookUrl);
-							}
-							if (doc.data().youtubeUrl !== 'Please Enter our URL') {
-								youtubeAnchor.setAttribute('href', doc.data().youtubeUrl);
-							}
-							if (doc.data().redditUrl !== 'Please Enter our URL') {
-								redditAnchor.setAttribute('href', doc.data().redditUrl);
+							if (doc.data().username === lowerUsername) {
+								console.log(doc.data());
+								const twitterAnchor = document.getElementById('twitterAnchor');
+								twitterAnchor.setAttribute('target', '_blank');
+								const redditAnchor = document.getElementById('redditAnchor');
+								redditAnchor.setAttribute('target', '_blank');
+								const instagramAnchor = document.getElementById('instagramAnchor');
+								instagramAnchor.setAttribute('target', '_blank');
+								const youtubeAnchor = document.getElementById('youtubeAnchor');
+								youtubeAnchor.setAttribute('target', '_blank');
+								const facebookAnchor = document.getElementById('facebookAnchor');
+								facebookAnchor.setAttribute('target', '_blank');
+								if (doc.data().twitterUrl !== 'Please Enter our URL') {
+									console.log(doc.data().twitterUrl);
+									twitterAnchor.setAttribute('href', doc.data().twitterUrl);
+								}
+								if (doc.data().instagramUrl !== 'Please Enter our URL') {
+									instagramAnchor.setAttribute('href', doc.data().instagramUrl);
+								}
+								if (doc.data().facebookUrl !== 'Please Enter our URL') {
+									facebookAnchor.setAttribute('href', doc.data().facebookUrl);
+								}
+								if (doc.data().youtubeUrl !== 'Please Enter our URL') {
+									youtubeAnchor.setAttribute('href', doc.data().youtubeUrl);
+								}
+								if (doc.data().redditUrl !== 'Please Enter our URL') {
+									redditAnchor.setAttribute('href', doc.data().redditUrl);
+								}
 							}
 						});
 					});
@@ -967,73 +1053,7 @@ firebase.auth().onAuthStateChanged((user) => {
 	}
 
 	if (exploreContainer) {
-		searchButton.addEventListener('click', () =>{
-			const tagToSearch = searchBar.value;
-			console.log(tagToSearch);
-			db.collection('users').get().then(snapshot => {
-				snapshot.docs.forEach(doc =>{
-					console.log(doc.data());
-					db.collection('users').doc(doc.data().userID).collection('aesthetics').get().then(snapshot => { // cycle throught the aesthetics collection
-						snapshot.docs.forEach(doc => {
-							console.log(doc.data());
-							if (doc.data().aestheticExists === true) {
-								let i;
-								for (i = 0; i < doc.data().aestheticTags.length; i++) {
-									console.log(doc.data().aestheticTags[0]);
-									if (tagToSearch === doc.data().aestheticTags[i]) {
-										console.log('Yata!');
-										let exploreAestheticToLoad = doc.data().aestheticName;  // aestheticfullishtest            //current aesthetic is equal to the current aesthetic in the loop
-										const exploreAestheticToLoadUserId = doc.data().userID;
-										const exploreAestheticDiv = document.createElement('div');                          // create a div
-										const exploreAestheticText = document.createElement('h3');
-										exploreAestheticText.setAttribute('class', 'exploreAestheticPreviewText');                      // create an h3
-										const aestheticAnchor = document.createElement('a'); 		                        // create an anchor for redirect
-										exploreAestheticDiv.setAttribute('class', 'exploreProfilePreview');                // give the div a class for styling
-										exploreAestheticText.innerHTML = exploreAestheticToLoad;                                  // make the h3's match the current aesthetic name in the cycle
-										console.log(exploreAestheticToLoad);												        // aestheticfullishtest
-										aestheticAnchor.appendChild(exploreAestheticText);                                  // append the h3 to the anchor element
-										exploreAestheticDiv.appendChild(aestheticAnchor);                                   // append the anchor element to the div
-										exploreContainer.appendChild(exploreAestheticDiv);
-										db.collection('users').doc(exploreAestheticToLoadUserId).collection('aesthetics').get().then(snapshot => { // cycle throught the aesthetics collection
-											snapshot.docs.forEach(doc => {
-												console.log(doc.data());
-												if (doc.data().aestheticName === exploreAestheticToLoad) {  // if the name of the document's aestheticName value is equal to the current aesthetic
-													console.log('dd1' + doc.data());
-													let storageRefForExplorePreview = storageService.ref('/' + doc.data().userID + '/' +  exploreAestheticToLoad + '/' + doc.data().aestheticFileNames[1]);
-													console.log('inside doc');
-													storageRefForExplorePreview.getDownloadURL().then((url) => {
-														const exploreAestheticPreviewImg = document.createElement('img'); // create an image
-														if (doc.data().portrait === true) {
-															exploreAestheticPreviewImg.setAttribute('width', '30%');
-														}
-														if (doc.data().landscape === true) {
-															exploreAestheticPreviewImg.setAttribute('width', '60%');
-														}
-														exploreAestheticPreviewImg.setAttribute('src', url);
-														exploreAestheticPreviewImg.setAttribute('id', doc.data().aestheticFileNames[0]);
-														exploreAestheticPreviewImg.setAttribute('class', 'previewImg');
-														exploreAestheticPreviewImg.style.objectFit = 'cover';
-														exploreAestheticPreviewImg.setAttribute('class', 'exploreAestheticPreviewImg');
-														exploreAestheticDiv.appendChild(exploreAestheticPreviewImg);
-														aestheticAnchor.setAttribute('href', doc.data().url);
-														console.log('url acquired');
-														console.log('url : ' + url);
-													});
-												}
-											});
-										}).catch((error) => {
-											const errorCode = error.code;
-											const errorMessage = error.message;
-											// console.log(errorMessage, errorCode)
-										});
-									}
-								}
-							}
-						});
-					});
-				});
-			});
-		});
+		populateSearches();
 	}
 });
 // todo followers/following -- when a user clicks follow on another user go into the database of their profile and make the followers value the followers value + 1

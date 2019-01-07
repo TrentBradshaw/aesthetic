@@ -116,7 +116,7 @@ a {
 #profilePic {
     height: 300px;
     width: 215px;
-    border-radius: 10px;
+    border-radius: 10px 10px 0px 0px;
 }
 
 #profileCard{
