@@ -45,6 +45,9 @@ app.get('/', jsonBodyParser,  (req,res) =>{
 app.get('/user/:username/following', (req, res) => {
   res.render('following', {username:req.params.username});
 });
+app.get('/user/:username/followers', (req, res) => {
+  res.render('followers', {username: req.params.username});
+})
 app.get('/profile', (req, res) =>{
 res.render('profile');
 });

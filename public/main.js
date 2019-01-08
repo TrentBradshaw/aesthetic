@@ -34,11 +34,13 @@ const auth = firebase.auth();
 const usernameHeader = document.getElementById('usernameHeader');
 const uploader = document.getElementById('uploader');
 const followingAnchor = document.getElementById('followingAnchor');
+const followersAnchor = document.getElementById('followersAnchor');
 const fileButton = document.getElementById('fileButton');
 const aestheticSpecsContainer = document.getElementById('aestheticSpecsContainer');
 const settingsForm = document.getElementById('settingsForm');
 const currentUser = document.getElementById('profileDropDown');
 const followingDiv = document.getElementById('followingDiv');
+const followersDiv = document.getElementById('followersDiv');
 const profilePic = document.getElementById('profilePic');
 const profilePicFileButton = document.getElementById('profilePicFileButton');
 const profilePicProgress = document.getElementById('profilePicProgress');
@@ -616,10 +618,10 @@ firebase.auth().onAuthStateChanged((user) => {
 				console.log('buttonclickedunfollow');
 				db.collection('users').get().then(snapshot =>{
 					snapshot.docs.forEach(doc =>{
-						console.log(doc.data());
 						if (doc.data().username.toLowerCase() === usernameHeader.innerHTML.toLowerCase()) {
-							const personUnfollowing = document.getElementById('profileDropDown');
 							console.log(doc.data());
+							const personUnfollowing = document.getElementById('profileDropDown');
+							console.log(personUnfollowing.innerHTML);
 							const pageOwnerUid = doc.data().userID;
 							console.log(pageOwnerUid);
 							const followersArrayForManipulation = doc.data().followersArray;
@@ -637,6 +639,8 @@ firebase.auth().onAuthStateChanged((user) => {
 										followersArray: followersArrayForManipulation,
 										followers: doc.data().followers - 1,
 									});
+									const followersNumb = document.getElementById('followersNumb');
+									followersNumb.innerHTML = doc.data().followers;
 									db.collection('users').get().then(snapshot => {
 										snapshot.docs.forEach(doc =>{
 											if (doc.data().username.toLowerCase() === personUnfollowing.innerHTML.toLowerCase()) {
@@ -652,7 +656,7 @@ firebase.auth().onAuthStateChanged((user) => {
 														followingArrayForManipulation.splice(i, 1);
 														db.collection('users').doc(doc.data().userID).update({
 															followingArray: followingArrayForManipulation,
-															followers: doc.data().following - 1,
+															following: doc.data().following - 1,
 														});
 													}
 												}
@@ -670,38 +674,45 @@ firebase.auth().onAuthStateChanged((user) => {
 		}
 		function follow() {
 			console.log('followBtn');
-					followBtn.addEventListener('click', () => {
-						// const pageToFollowValue = pageToFollow.innerHTML.toLowerCase();
-						// const userUserNameValue = userUserName.innerHTML.toLowerCase();
-							db.collection('users').get().then(snapshot =>{
-								snapshot.docs.forEach(doc => {
-									const userUsername = document.getElementById('profileDropDown');
-									if (doc.data().username.toLowerCase() === userUsername.innerHTML.toLowerCase()) {
-										db.collection('users').doc(doc.data().userID).update({
-											followingArray: firebase.firestore.FieldValue.arrayUnion(usernameHeader.innerHTML.toLowerCase()),
-											following: doc.data().following + 1,
-										});
-										console.log('follwingAdded');
-									}
-								});
+			followBtn.addEventListener('click', () => {
+				// const pageToFollowValue = pageToFollow.innerHTML.toLowerCase();
+				// const userUserNameValue = userUserName.innerHTML.toLowerCase();
+				db.collection('users').get().then(snapshot =>{
+					snapshot.docs.forEach(doc => {
+						const userUsername = document.getElementById('profileDropDown');
+						if (doc.data().username.toLowerCase() === userUsername.innerHTML.toLowerCase()) {
+							console.log(doc.data());
+							db.collection('users').doc(doc.data().userID).update({
+								followingArray: firebase.firestore.FieldValue.arrayUnion(usernameHeader.innerHTML.toLowerCase()),
+								following: doc.data().following + 1,
 							});
-							db.collection('users').get().then(snapshot =>{
-								snapshot.docs.forEach(doc =>{
-									if (doc.data().username.toLowerCase() === usernameHeader.innerHTML.toLowerCase()) {
-										const pageOwnerUid = doc.data().userID;
-										const userUsername = document.getElementById('profileDropDown');
-										db.collection('users').doc(pageOwnerUid).update({
-											followersArray: firebase.firestore.FieldValue.arrayUnion(userUsername.innerHTML.toLowerCase()),
-											followers: doc.data().followers + 1,
-										});
-										console.log('followerAdded');
-									}
-								});
-							});
-						console.log('changingInnerHTML');
-						followBtn.style.display = 'none';
-						unfollowButton.style.display = 'block';
+							console.log('followingAdded');
+						}
 					});
+				});
+				db.collection('users').get().then(snapshot =>{
+					snapshot.docs.forEach(doc =>{
+						if (doc.data().username.toLowerCase() === usernameHeader.innerHTML.toLowerCase()) {
+							console.log(doc.data());
+							const pageOwnerUid = doc.data().userID;
+							const userUsername = document.getElementById('profileDropDown');
+							console.log(doc.data().followers);
+							db.collection('users').doc(pageOwnerUid).update({
+								followersArray: firebase.firestore.FieldValue.arrayUnion(userUsername.innerHTML.toLowerCase()),
+								followers: doc.data().followers + 1,
+							});
+							const followersNumb = document.getElementById('followersNumb');
+							followersNumb.innerHTML = doc.data().followers;
+							console.log('followerAdded');
+							console.log(doc.data().followers);
+						}
+					});
+				});
+				console.log('changingInnerHTML');
+				followBtn.style.display = 'none';
+				unfollowButton.style.display = 'block';
+				console.log('hello');
+			});
 		}
 		function logSettings() {
 			const twitterURLInput = document.getElementById('twitterURLInput');
@@ -1046,6 +1057,45 @@ firebase.auth().onAuthStateChanged((user) => {
 						});
 					});
 		}
+		function populateFollowingPageWithFollowing() {
+			console.log('hello');
+			const nameOfPersonFollowing = document.getElementById('nameOfPersonFollowing');
+			const nameOfPersonFollowingValue = nameOfPersonFollowing.innerHTML.toLowerCase();
+			console.log('name ' + nameOfPersonFollowingValue);
+			db.collection('users').get().then(snapshot => {
+				snapshot.docs.forEach(doc =>{
+					if (doc.data().username === nameOfPersonFollowingValue) {
+						console.log(doc.data().followingArray);
+						const arrayOfFollowing = doc.data().followingArray;
+						let i;
+						for (i = 1; i < arrayOfFollowing.length; i++) {
+							const followingInstance = arrayOfFollowing[i];
+							const followingInstanceAnchor = document.createElement('a');
+							const followingInstanceHeader = document.createElement('h1');
+							followingInstanceHeader.innerHTML = followingInstance;
+							const followingInstanceContainer = document.createElement('div');
+							db.collection('users').get().then(snapshot => {
+								snapshot.docs.forEach(doc => {
+									if (doc.data().username.toLowerCase() === followingInstance.toLowerCase()) {
+										const followingUrl = 'http://localhost:5000/user/' + followingInstance;
+										followingInstanceAnchor.setAttribute('href', followingUrl);
+										if (doc.data().profilePic) {
+											const followingInstanceProfilePic = document.createElement('img');
+											followingInstanceProfilePic.setAttribute('id', 'followingInstanceProfilePic');
+											followingInstanceProfilePic.setAttribute('src', doc.data().profilePic);
+											followingInstanceContainer.appendChild(followingInstanceProfilePic);
+										}
+									}
+								});
+							});
+							followingInstanceAnchor.appendChild(followingInstanceHeader);
+							followingInstanceContainer.appendChild(followingInstanceAnchor);
+							followingDiv.appendChild(followingInstanceContainer);
+						}
+					}
+				});
+			});
+		}
 
 		firebase.auth().currentUser.getIdToken(/* forceRefresh */ true).then(function(idToken) {
 			// Send token to your backend via HTTPS
@@ -1101,7 +1151,9 @@ firebase.auth().onAuthStateChanged((user) => {
 		if (usernameHeader) { // if the username header on the profile page exists
 			// todo make followers and following update in realtime
 			const followingUrl = 'http://localhost:5000/user/' + usernameHeader.innerHTML.toLowerCase() + '/following';
+			const followersUrl = 'http://localhost:5000/user/' + usernameHeader.innerHTML.toLowerCase() + '/followers';
 			followingAnchor.setAttribute('href', followingUrl);
+			followersAnchor.setAttribute('href', followersUrl);
 			checkIfFollowing();
 			if (followBtn) {
 				follow();
@@ -1124,39 +1176,42 @@ firebase.auth().onAuthStateChanged((user) => {
 		populateSearches();
 		}
 		if (followingDiv) {
+			populateFollowingPageWithFollowing();
+		}
+		if (followersDiv) {
 			console.log('hello');
-			const nameOfPersonFollowing = document.getElementById('nameOfPersonFollowing');
-			const nameOfPersonFollowingValue = nameOfPersonFollowing.innerHTML.toLowerCase();
-			console.log('name ' + nameOfPersonFollowingValue);
+			const nameOfPersonBeingFollowed = document.getElementById('nameOfPersonBeingFollowed');
+			const nameOfPersonBeingFollowedValue = nameOfPersonBeingFollowed.innerHTML.toLowerCase();
+			console.log('name ' + nameOfPersonBeingFollowedValue);
 			db.collection('users').get().then(snapshot => {
 				snapshot.docs.forEach(doc =>{
-					if (doc.data().username === nameOfPersonFollowingValue) {
-						console.log(doc.data().followingArray);
-						const arrayOfFollowing = doc.data().followingArray;
+					if (doc.data().username === nameOfPersonBeingFollowedValue) {
+						console.log(doc.data().followersArray);
+						const arrayOfFollowers = doc.data().followersArray;
 						let i;
-						for (i = 1; i < arrayOfFollowing.length; i++) {
-							const followingInstance = arrayOfFollowing[i];
-							const followingInstanceAnchor = document.createElement('a');
-							const followingInstanceHeader = document.createElement('h1');
-							followingInstanceHeader.innerHTML = followingInstance;
-							const followingInstanceContainer = document.createElement('div');
+						for (i = 1; i < arrayOfFollowers.length; i++) {
+							const followerInstance = arrayOfFollowers[i];
+							const followerInstanceAnchor = document.createElement('a');
+							const followerInstanceHeader = document.createElement('h1');
+							followerInstanceHeader.innerHTML = followerInstance;
+							const followerInstanceContainer = document.createElement('div');
 							db.collection('users').get().then(snapshot => {
 								snapshot.docs.forEach(doc => {
-									if (doc.data().username.toLowerCase() === followingInstance.toLowerCase()) {
-										const followingUrl = 'http://localhost:5000/user/' + followingInstance;
-										followingInstanceAnchor.setAttribute('href', followingUrl);
+									if (doc.data().username.toLowerCase() === followerInstance.toLowerCase()) {
+										const followerUrl = 'http://localhost:5000/user/' + followerInstance;
+										followerInstanceAnchor.setAttribute('href', followerUrl);
 										if (doc.data().profilePic) {
-											const followingInstanceProfilePic = document.createElement('img');
-											followingInstanceProfilePic.setAttribute('id', 'followingInstanceProfilePic');
-											followingInstanceProfilePic.setAttribute('src', doc.data().profilePic);
-											followingInstanceContainer.appendChild(followingInstanceProfilePic);
+											const followerInstanceProfilePic = document.createElement('img');
+											followerInstanceProfilePic.setAttribute('id', 'followerInstanceProfilePic');
+											followerInstanceProfilePic.setAttribute('src', doc.data().profilePic);
+											followerInstanceContainer.appendChild(followerInstanceProfilePic);
 										}
 									}
 								});
 							});
-							followingInstanceAnchor.appendChild(followingInstanceHeader);
-							followingInstanceContainer.appendChild(followingInstanceAnchor);
-							followingDiv.appendChild(followingInstanceContainer);
+							followerInstanceAnchor.appendChild(followerInstanceHeader);
+							followerInstanceContainer.appendChild(followerInstanceAnchor);
+							followersDiv.appendChild(followerInstanceContainer);
 						}
 					}
 				});
