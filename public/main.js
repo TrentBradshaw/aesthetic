@@ -109,6 +109,7 @@ if (btnSignUp) {                                                                
 					redditUrl: 'Please Enter our URL',
 					youtubeUrl: 'Please Enter our URL',
 					facebookUrl: 'Please Enter our URL',
+					profilePic: 'http://localhost:5000/default-profile-pic-png-8.png',
 				});
 			} return true;
 		}).catch((error) => {
@@ -1127,6 +1128,39 @@ firebase.auth().onAuthStateChanged((user) => {
 			const nameOfPersonFollowing = document.getElementById('nameOfPersonFollowing');
 			const nameOfPersonFollowingValue = nameOfPersonFollowing.innerHTML.toLowerCase();
 			console.log('name ' + nameOfPersonFollowingValue);
+			db.collection('users').get().then(snapshot => {
+				snapshot.docs.forEach(doc =>{
+					if (doc.data().username === nameOfPersonFollowingValue) {
+						console.log(doc.data().followingArray);
+						const arrayOfFollowing = doc.data().followingArray;
+						let i;
+						for (i = 1; i < arrayOfFollowing.length; i++) {
+							const followingInstance = arrayOfFollowing[i];
+							const followingInstanceAnchor = document.createElement('a');
+							const followingInstanceHeader = document.createElement('h1');
+							followingInstanceHeader.innerHTML = followingInstance;
+							const followingInstanceContainer = document.createElement('div');
+							db.collection('users').get().then(snapshot => {
+								snapshot.docs.forEach(doc => {
+									if (doc.data().username.toLowerCase() === followingInstance.toLowerCase()) {
+										const followingUrl = 'http://localhost:5000/user/' + followingInstance;
+										followingInstanceAnchor.setAttribute('href', followingUrl);
+										if (doc.data().profilePic) {
+											const followingInstanceProfilePic = document.createElement('img');
+											followingInstanceProfilePic.setAttribute('id', 'followingInstanceProfilePic');
+											followingInstanceProfilePic.setAttribute('src', doc.data().profilePic);
+											followingInstanceContainer.appendChild(followingInstanceProfilePic);
+										}
+									}
+								});
+							});
+							followingInstanceAnchor.appendChild(followingInstanceHeader);
+							followingInstanceContainer.appendChild(followingInstanceAnchor);
+							followingDiv.appendChild(followingInstanceContainer);
+						}
+					}
+				});
+			});
 		}
 	} else {
 		console.log('user not signed in');
