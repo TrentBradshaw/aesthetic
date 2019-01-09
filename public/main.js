@@ -969,9 +969,9 @@ firebase.auth().onAuthStateChanged((user) => {
 						console.log(doc.data());
 						const profileDropDown = document.getElementById('profileDropDown');
 						profileDropDown.innerHTML = doc.data().username;
-						homeAnchor.setAttribute('href', 'https://walrusaesthetic.firebaseapp.com/user' + doc.data().username);
+						homeAnchor.setAttribute('href', 'https://walrusaesthetic.firebaseapp.com/user/' + doc.data().username);
 						console.log(window.location.href);
-						if (window.location.href === 'https://walrusaesthetic.firebaseapp.com/user' + doc.data().username) {
+						if (window.location.href === 'https://walrusaesthetic.firebaseapp.com/user/' + doc.data().username) {
 							console.log('amen');
 							followBtn.style.display = 'none';
 						}
