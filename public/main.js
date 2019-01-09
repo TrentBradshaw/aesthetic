@@ -803,16 +803,29 @@ firebase.auth().onAuthStateChanged((user) => {
 							if (doc.data().username === owner) {
 								if (user.uid === doc.data().userID) {
 									console.log('yataa');
+									const deleteButton = document.createElement('button');
+									deleteButton.setAttribute('id', 'deleteButton');
+									deleteButton.innerHTML = 'delete';
 									const editButton = document.createElement('button');
 									editButton.setAttribute('id', 'editButton');
 									editButton.innerHTML = 'edit';
 									const aestheticInteractionButtonDiv = document.getElementById('aestheticInteractionButtonDiv');
 									const uploadAndProgress = document.getElementById('uploadAndProgress');
 									aestheticInteractionButtonDiv.appendChild(editButton);
+									aestheticInteractionButtonDiv.appendChild(deleteButton);
 									if (editButton) {
 										editButton.addEventListener('click', () => {
 										console.log('dab');
 										uploadAndProgress.style.display = 'block';
+										});
+									}
+									if (deleteButton) {
+										deleteButton.addEventListener('click', () => {
+											if (confirm('delete Curation?')) {
+												console.log('deleted');
+											} else {
+												console.log('cancelled');
+											}
 										});
 									}
 								}
@@ -827,44 +840,46 @@ firebase.auth().onAuthStateChanged((user) => {
 			console.log(owner);
 					// if owner === page owner create the edit button and then add the file upload and save buttons
 					// console.log(db.collection('users').doc(user.uid).collection('aesthetics').doc(aestheticLookup).aestheticFileNames);
-					db.collection('users').get().then(snapshot =>{
-						snapshot.docs.forEach(doc => {
+					db.collection('users').get().then(snapshot =>{ // cycle through users
+						snapshot.docs.forEach(doc => {  // take a look at the documents
 							console.log(doc.data());
-							if (doc.data().username === owner) {
+							if (doc.data().username === owner) {  // if the document's username field is equal to the owner of the current page
 								console.log(doc.data());
-								const ownerUID = doc.data().userID;
+								const ownerUID = doc.data().userID;  // declare OwnerUID as the userID field of the document
 								console.log(ownerUID);
 								console.log(aestheticLookup.toLowerCase());
-								db.collection('users').doc(ownerUID).collection('aesthetics').get().then(snapshot => {
-									snapshot.docs.forEach(doc => {
-										if (doc.data().aestheticName.toLowerCase() === aestheticLookup.toLowerCase()) {
+								db.collection('users').doc(ownerUID).collection('aesthetics').get().then(snapshot => {  // look through the owner's aesthetics collection
+									snapshot.docs.forEach(doc => { // peek at the docs
+										if (doc.data().aestheticName.toLowerCase() === aestheticLookup.toLowerCase()) { // if the aestheticName field is equal to the aesthetic name of the page
 											console.log(doc.data());
 											console.log(doc.data().aestheticFileNames.length);
 											let i;
-											for (i = 1; i < doc.data().aestheticFileNames.length; i++) {
+											for (i = 1; i < doc.data().aestheticFileNames.length; i++) {  // loop through the files in the aestheticfilenames field
 												console.log('inside the loop');
 
-												const storageRefForLoad = storageService.ref('/' + ownerUID + '/' +  aestheticLookup + '/' + doc.data().aestheticFileNames[i]);
+												const storageRefForLoad = storageService.ref('/' + ownerUID + '/' +  aestheticLookup + '/' + doc.data().aestheticFileNames[i]);  // create a reference to the img in storage
 												console.log(storageRefForLoad);
+												let currentFileName = doc.data().aestheticFileNames[i];  // store the name of the image
 												// eslint-disable-next-line promise/no-nesting
 												// eslint-disable-next-line no-loop-func
-												storageRefForLoad.getDownloadURL().then((url) => {
-													const photoDiv = document.getElementById('photoContainerTwo');
-
-												const permImgContainer = document.createElement('img');
+												storageRefForLoad.getDownloadURL().then((url) => {  // take a look at the image we're referencing and get it's url
+												const photoDiv = document.getElementById('photoContainerTwo');  // grab the div that holds the image
+												const permImgContainer = document.createElement('img'); // create an image
 
 												photoDiv.setAttribute('style', 'text-align: center');
-												permImgContainer.setAttribute('id', doc.data().aestheticFileNames[i]);
+												permImgContainer.setAttribute('id', currentFileName);  // set the id of the image to the file name of the image in storage
 												permImgContainer.setAttribute('height', '70%');
-												if (doc.data().landscape === true) {
-													permImgContainer.setAttribute('width', '90%');
-												} else if (doc.data().portrait === true) {
-													permImgContainer.setAttribute('width', '50%');
+												console.log(doc.data());
+												console.log(currentFileName);
+												if (doc.data().landscape === true) {  // if the aesthetic has been declared as a landscape curation
+													permImgContainer.setAttribute('width', '90%'); // set its width to 90%
+												} else if (doc.data().portrait === true) { // if the aesthetic has been declared as a portrait curation
+													permImgContainer.setAttribute('width', '50%'); // set its width to 50%
 												}
 												console.log('url acquired');
 												console.log('url : ' + url);
-												permImgContainer.setAttribute('src', url);
-												photoDiv.appendChild(permImgContainer);
+												permImgContainer.setAttribute('src', url);  // set the image's source as the download url we got
+												photoDiv.appendChild(permImgContainer);  // append the processed image to the container on the page
 													return true;
 												// eslint-disable-next-line no-loop-func
 												}).catch((error) => {
@@ -1096,6 +1111,45 @@ firebase.auth().onAuthStateChanged((user) => {
 				});
 			});
 		}
+		function populateFollowersPageWithFollowers() {
+			console.log('hello');
+			const nameOfPersonBeingFollowed = document.getElementById('nameOfPersonBeingFollowed');
+			const nameOfPersonBeingFollowedValue = nameOfPersonBeingFollowed.innerHTML.toLowerCase();
+			console.log('name ' + nameOfPersonBeingFollowedValue);
+			db.collection('users').get().then(snapshot => {
+				snapshot.docs.forEach(doc =>{
+					if (doc.data().username === nameOfPersonBeingFollowedValue) {
+						console.log(doc.data().followersArray);
+						const arrayOfFollowers = doc.data().followersArray;
+						let i;
+						for (i = 1; i < arrayOfFollowers.length; i++) {
+							const followerInstance = arrayOfFollowers[i];
+							const followerInstanceAnchor = document.createElement('a');
+							const followerInstanceHeader = document.createElement('h1');
+							followerInstanceHeader.innerHTML = followerInstance;
+							const followerInstanceContainer = document.createElement('div');
+							db.collection('users').get().then(snapshot => {
+								snapshot.docs.forEach(doc => {
+									if (doc.data().username.toLowerCase() === followerInstance.toLowerCase()) {
+										const followerUrl = 'http://localhost:5000/user/' + followerInstance;
+										followerInstanceAnchor.setAttribute('href', followerUrl);
+										if (doc.data().profilePic) {
+											const followerInstanceProfilePic = document.createElement('img');
+											followerInstanceProfilePic.setAttribute('id', 'followerInstanceProfilePic');
+											followerInstanceProfilePic.setAttribute('src', doc.data().profilePic);
+											followerInstanceContainer.appendChild(followerInstanceProfilePic);
+										}
+									}
+								});
+							});
+							followerInstanceAnchor.appendChild(followerInstanceHeader);
+							followerInstanceContainer.appendChild(followerInstanceAnchor);
+							followersDiv.appendChild(followerInstanceContainer);
+						}
+					}
+				});
+			});
+		}
 
 		firebase.auth().currentUser.getIdToken(/* forceRefresh */ true).then(function(idToken) {
 			// Send token to your backend via HTTPS
@@ -1179,43 +1233,7 @@ firebase.auth().onAuthStateChanged((user) => {
 			populateFollowingPageWithFollowing();
 		}
 		if (followersDiv) {
-			console.log('hello');
-			const nameOfPersonBeingFollowed = document.getElementById('nameOfPersonBeingFollowed');
-			const nameOfPersonBeingFollowedValue = nameOfPersonBeingFollowed.innerHTML.toLowerCase();
-			console.log('name ' + nameOfPersonBeingFollowedValue);
-			db.collection('users').get().then(snapshot => {
-				snapshot.docs.forEach(doc =>{
-					if (doc.data().username === nameOfPersonBeingFollowedValue) {
-						console.log(doc.data().followersArray);
-						const arrayOfFollowers = doc.data().followersArray;
-						let i;
-						for (i = 1; i < arrayOfFollowers.length; i++) {
-							const followerInstance = arrayOfFollowers[i];
-							const followerInstanceAnchor = document.createElement('a');
-							const followerInstanceHeader = document.createElement('h1');
-							followerInstanceHeader.innerHTML = followerInstance;
-							const followerInstanceContainer = document.createElement('div');
-							db.collection('users').get().then(snapshot => {
-								snapshot.docs.forEach(doc => {
-									if (doc.data().username.toLowerCase() === followerInstance.toLowerCase()) {
-										const followerUrl = 'http://localhost:5000/user/' + followerInstance;
-										followerInstanceAnchor.setAttribute('href', followerUrl);
-										if (doc.data().profilePic) {
-											const followerInstanceProfilePic = document.createElement('img');
-											followerInstanceProfilePic.setAttribute('id', 'followerInstanceProfilePic');
-											followerInstanceProfilePic.setAttribute('src', doc.data().profilePic);
-											followerInstanceContainer.appendChild(followerInstanceProfilePic);
-										}
-									}
-								});
-							});
-							followerInstanceAnchor.appendChild(followerInstanceHeader);
-							followerInstanceContainer.appendChild(followerInstanceAnchor);
-							followersDiv.appendChild(followerInstanceContainer);
-						}
-					}
-				});
-			});
+			populateFollowersPageWithFollowers();
 		}
 	} else {
 		console.log('user not signed in');

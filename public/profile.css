@@ -136,6 +136,10 @@ a {
 .socialMediaIcons{
     height: 30px;
 }
+.tag {
+    margin: 20px;
+    border: 1px solid white;
+}
 
 #mostLiked {
     margin-top: 40%;
