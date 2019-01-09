@@ -1,7 +1,7 @@
 {
   "name": "aesthetic",
   "version": "1.0.0",
-  "main": "server/server.js",
+  "main": "C:/Users/wally/Projects/aesthetic/functions/index.js",
   "engines": {
     "node": ">=4"
   },
@@ -13,12 +13,14 @@
   "dependencies": {
     "body-parser": "^1.18.3",
     "compression": "^1.0.3",
+    "consolidate": "^0.15.1",
     "cors": "^2.5.2",
     "helmet": "^3.10.0",
     "loopback": "^3.22.0",
     "loopback-boot": "^2.6.5",
     "loopback-component-explorer": "^6.2.0",
     "nodemon": "^1.18.9",
+    "pug": "^2.0.3",
     "serve-favicon": "^2.0.1",
     "strong-error-handler": "^3.0.0"
   },

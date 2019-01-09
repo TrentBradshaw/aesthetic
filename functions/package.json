@@ -14,7 +14,18 @@
     "cors": "^2.8.5",
     "express": "^4.16.4",
     "firebase-admin": "~6.0.0",
-    "firebase-functions": "^2.1.0"
+    "firebase-functions": "^2.1.0",
+    "body-parser": "^1.18.3",
+    "pug": "^2.0.3",
+    "compression": "^1.0.3",
+    "consolidate": "^0.15.1",
+    "helmet": "^3.10.0",
+    "loopback": "^3.22.0",
+    "loopback-boot": "^2.6.5",
+    "loopback-component-explorer": "^6.2.0",
+    "nodemon": "^1.18.9",
+    "serve-favicon": "^2.0.1",
+    "strong-error-handler": "^3.0.0"
     
   },
   "devDependencies": {

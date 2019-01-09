@@ -2,7 +2,7 @@ doctype html
 html(lang='eng')
     head
         meta(charset='utf-8')
-        link(rel ='stylesheet' type = 'text/css' href = 'http://localhost:5000/explore.css')
+        link(rel ='stylesheet' type = 'text/css' href = 'https://walrusaesthetic.firebaseapp.com/explore.css')
         link(rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css')
         script(src="https://www.gstatic.com/firebasejs/5.5.7/firebase.js")
     body
@@ -11,12 +11,12 @@ html(lang='eng')
                 div#leftHeaderNav
                     a#homeAnchor.navAnchors
                         span#home.headerNav home
-                    a#exploreAnchor.navAnchors(href='http://localhost:5000/explore')
+                    a#exploreAnchor.navAnchors(href='https://walrusaesthetic.firebaseapp.com/explore')
                         span#explore.headerNav explore
                 h2.headerNav AESTHETIC
                 div#rightHeaderNav
                     span#profile.headerNav profile
-                    a.headerNav(href="http://localhost:5000/settings")
+                    a.headerNav(href="https://walrusaesthetic.firebaseapp.com/settings")
                         span#settings.headerNav settings
                     span#profileDropDown.dropbtn
                     div.dropdown
@@ -31,4 +31,4 @@ html(lang='eng')
             button#searchButton(type='submit') Search
             i.fa.fa-search
         div#exploreContainer
-        script(src="http://localhost:5000/main.js")
+        script(src="https://walrusaesthetic.firebaseapp.com/main.js")
