@@ -23,6 +23,10 @@ const storageRef = storageService.ref();
 const database = firebase.database();
 const auth = firebase.auth();
 
+// todo -- add aesthetic likes
+// todo -- finish letting aesthetics be deleted
+// todo -- update profile page aesthetics posts when an aesthetic is created, then adjust it when it's deleted
+
 // todo add an option for a 30s music file to accompany the aesthetic to better capture the essence trying to be conveyed
 
 // todo -- make functions for code to eliminate scope issues
