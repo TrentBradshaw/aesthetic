@@ -5,22 +5,20 @@ html
         meta(charset='utf-8')
         link(rel='stylesheet' type='text/css' href='https://walrusaesthetic.firebaseapp.com/aesthetic.css')
         script(src='https://www.gstatic.com/firebasejs/5.5.7/firebase.js')
-    body
+    body#aestheticBody
         header
             div#profileHeader
                 div#leftHeaderNav
                     a#homeAnchor.navAnchors
-                        span#home.headerNav home
-                    a#exploreAnchor.navAnchors(href='https://walrusaesthetic.firebaseapp.com/explore')
-                        span#explore.headerNav explore
-
-                h2#aestheticHeading.headerNav AESTHETIC
+                        span#home.headerElements home
+                    a#exploreAnchor.headerElements.navAnchors(href='https://walrusaesthetic.firebaseapp.com/explore')
+                        span#explore.headerElements explore
+                h2#aestheticHeading AESTHETIC
                 div#rightHeaderNav
-                    span#profile.headerNav profile
-                    a.headerNav(href="https://walrusaesthetic.firebaseapp.com/settings")
-                        span#settings.headerNav settings
-                    span#profileDropDown.dropbtn
-                    a#btnLogout.btn.btn-action.hide Log out
+                    a#settingsAnchor.headerElements.navAnchors(href="https://walrusaesthetic.firebaseapp.com/settings")
+                        span#settings.headerElements settings
+                    span#profileDropDown.dropbtn.navAnchors
+                    a#btnLogout.btn.btn-action.hide.headerElements.navAnchors Log out
         div#aestheticManagementDiv
             div#AestheticPageInfo
                 div#pageCredits

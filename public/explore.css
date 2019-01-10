@@ -1,15 +1,21 @@
 * {
     box-sizing: border-box;
   }
-  
-  #profileHeader{
+  a {
+    text-decoration: none;
+}
+#profileHeader{
     display: flex;
     justify-content: space-between;
-    background-color: lightgrey;
+    background-color: white;
 }
 .navAnchors {
     margin-top: 15px;
     margin-bottom: 15px;
+}
+.headerElements {
+    font-size: 1em; /*switch to 2em after fixing */
+    font-variant-caps: all-small-caps;
 }
 
 #leftHeaderNav{
@@ -19,21 +25,14 @@
 }
 
 .headerNav{
-    margin-top: 15px;
-    margin-bottom: 15px;
+    margin-top: 5px;
+    margin-bottom: 25px;
 }
 
 #rightHeaderNav{
     width: 30%;
     display: flex;
     justify-content: space-around;
-}
-
-#btnLogout {
-    width: 100px;
-    height: 30px;
-    margin-top: 9px;
-    background-color: lightgrey;
 }
 
 #aestheticHeading{
@@ -46,81 +45,68 @@
     padding: 0px 6px;
     text-shadow: 1px 1px 2px;
 }
-
-/* Dropdown Button */
-.dropbtn {
-    background-color: lightgrey;
-    color: white;
-    padding: 16px;
-    font-size: 16px;
-    border: none;
+  .exploreProfilePreview {
+    width: 30%;
   }
-  
+  #exploreContainer {
+    display: flex;
+    flex-wrap: wrap;
+
+  }
+.exploreAestheticPreviewText {
+    width: 100%;
+    background: white;
+    text-align: center;
+    font-variant-caps: all-petite-caps;
+    letter-spacing: 35px;
+  }
+
+  a {
+    text-decoration: none;
+  }
+  #exploreBody {
+    background: #10171e
+  }
+
+  .exploreAestheticPreviewImg {
+    margin-bottom: -4px;
+  }
   /* The container <div> - needed to position the dropdown content */
   .dropdown {
     position: relative;
     display: inline-block;
   }
   #exploreContainer {
-    height: 100px;
-    background-color: pink;
+    display: flex;
   }
-  /* Dropdown Content (Hidden by Default) */
-  .dropdown-content {
-    display: none;
-    position: absolute;
-    background-color: #f1f1f1;
-    min-width: 160px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-    z-index: 1;
+  #searchBar {
+    border-radius: 0px;
+    border-style: none;
+    margin-right: 1%;
+    text-align: center;
   }
-  
-  /* Links inside the dropdown */
-  .dropdown-content a {
-    color: black;
-    padding: 12px 16px;
-    text-decoration: none;
-    display: block;
+
+  #searchButton {
+    border-radius: 10px;
+    border-style: none;
   }
-  
-  /* Change color of dropdown links on hover */
-  .dropdown-content a:hover {background-color: #ddd;}
-  
-  /* Show the dropdown menu on hover */
-  .dropdown:hover .dropdown-content {display: block;}
-  
-  /* Change the background color of the dropdown button when the dropdown content is shown */
-  .dropdown:hover .dropbtn {background-color: #3e8e41;}
-  /* Style the search field */
-  form.example input[type=text] {
-    padding: 10px;
-    font-size: 17px;
-    border: 1px solid grey;
-    float: left;
-    width: 80%;
-    background: #f1f1f1;
-  }
-  
-  /* Style the submit button */
-  form.example button {
-    float: left;
+  #form {
+    margin-right: 0%;
+    margin-left: 44%;
     width: 20%;
-    padding: 10px;
-    background: #2196F3;
-    color: white;
-    font-size: 17px;
-    border: 1px solid grey;
-    border-left: none; /* Prevent double borders */
-    cursor: pointer;
+    margin-top: 3%;
   }
-  
-  form.example button:hover {
-    background: #0b7dda;
+  .exploreAestheticPortraitPreview {
+    width: 40%;
+    margin-right: 30%;
+    margin-left: 30%;
+    margin-top: 5%;
+    background-color: white;
   }
-  
-  /* Clear floats */
-  form.example::after {
-    content: "";
-    clear: both;
-    display: table;
+  .exploreAestheticLandscapePreview {
+    width: 50%;
+    margin-right: 25%;
+    margin-left: 25%;
+    margin-top: 5%;
+    background-color: white;
   }

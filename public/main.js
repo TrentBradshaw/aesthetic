@@ -563,13 +563,13 @@ firebase.auth().onAuthStateChanged((user) => {
 										console.log(doc.data().aestheticTags[0]);
 										if (tagToSearch === doc.data().aestheticTags[i]) {
 											console.log('Yata!');
-											let exploreAestheticToLoad = doc.data().aestheticName;  // aestheticfullishtest            //current aesthetic is equal to the current aesthetic in the loop
-											const exploreAestheticToLoadUserId = doc.data().userID;
+											let exploreAestheticToLoad = doc.data().aestheticName;                       // current aesthetic is equal to the current aesthetic in the loop
+											const exploreAestheticToLoadUserId = doc.data().userID;                      // grab the id of the document's owner
 											const exploreAestheticDiv = document.createElement('div');                          // create a div
-											const exploreAestheticText = document.createElement('h3');
-											exploreAestheticText.setAttribute('class', 'exploreAestheticPreviewText');                      // create an h3
+											const exploreAestheticText = document.createElement('h3'); 							// create an h3
+											exploreAestheticText.setAttribute('class', 'exploreAestheticPreviewText');                // give the text a class for styling
 											const aestheticAnchor = document.createElement('a'); 		                        // create an anchor for redirect
-											exploreAestheticDiv.setAttribute('class', 'exploreProfilePreview');                // give the div a class for styling
+											exploreAestheticDiv.setAttribute('class', 'exploreAestheticPreview');                // give the div a class for styling
 											exploreAestheticText.innerHTML = exploreAestheticToLoad;                                  // make the h3's match the current aesthetic name in the cycle
 											console.log(exploreAestheticToLoad);												        // aestheticfullishtest
 											aestheticAnchor.appendChild(exploreAestheticText);                                  // append the h3 to the anchor element
@@ -585,10 +585,12 @@ firebase.auth().onAuthStateChanged((user) => {
 														storageRefForExplorePreview.getDownloadURL().then((url) => {
 															const exploreAestheticPreviewImg = document.createElement('img'); // create an image
 															if (doc.data().portrait === true) {
-																exploreAestheticPreviewImg.setAttribute('width', '30%');
+																exploreAestheticPreviewImg.setAttribute('width', '100%');
+																exploreAestheticDiv.setAttribute('class', 'exploreAestheticPortraitPreview');
 															}
 															if (doc.data().landscape === true) {
-																exploreAestheticPreviewImg.setAttribute('width', '60%');
+																exploreAestheticPreviewImg.setAttribute('width', '100%');
+																exploreAestheticDiv.setAttribute('class', 'exploreAestheticLandscapePreview');
 															}
 															exploreAestheticPreviewImg.setAttribute('src', url);
 															exploreAestheticPreviewImg.setAttribute('id', doc.data().aestheticFileNames[0]);
@@ -869,6 +871,7 @@ firebase.auth().onAuthStateChanged((user) => {
 												storageRefForLoad.getDownloadURL().then((url) => {  // take a look at the image we're referencing and get it's url
 												const photoDiv = document.getElementById('photoContainerTwo');  // grab the div that holds the image
 												const permImgContainer = document.createElement('img'); // create an image
+												const photoHolder = document.createElement('div');
 
 												photoDiv.setAttribute('style', 'text-align: center');
 												permImgContainer.setAttribute('id', currentFileName);  // set the id of the image to the file name of the image in storage
@@ -876,14 +879,17 @@ firebase.auth().onAuthStateChanged((user) => {
 												console.log(doc.data());
 												console.log(currentFileName);
 												if (doc.data().landscape === true) {  // if the aesthetic has been declared as a landscape curation
-													permImgContainer.setAttribute('width', '90%'); // set its width to 90%
+													photoHolder.setAttribute('class', 'landscapeHolder');
+													permImgContainer.setAttribute('width', '100%');
 												} else if (doc.data().portrait === true) { // if the aesthetic has been declared as a portrait curation
-													permImgContainer.setAttribute('width', '50%'); // set its width to 50%
+												    permImgContainer.setAttribute('width', '100%');
+													photoHolder.setAttribute('class', 'portraitHolder'); // set its width to 50%
 												}
 												console.log('url acquired');
 												console.log('url : ' + url);
 												permImgContainer.setAttribute('src', url);  // set the image's source as the download url we got
-												photoDiv.appendChild(permImgContainer);  // append the processed image to the container on the page
+												photoHolder.appendChild(permImgContainer);
+												photoDiv.appendChild(photoHolder);  // append the processed image to the container on the page
 													return true;
 												// eslint-disable-next-line no-loop-func
 												}).catch((error) => {
