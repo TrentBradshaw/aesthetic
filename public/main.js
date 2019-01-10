@@ -115,7 +115,7 @@ if (btnSignUp) {                                                                
 					redditUrl: 'Please Enter our URL',
 					youtubeUrl: 'Please Enter our URL',
 					facebookUrl: 'Please Enter our URL',
-					profilePic: 'https://walrusaesthetic.firebaseapp.com/default-profile-pic-png-8.png',
+					profilePic: 'http://localhost:5000/default-profile-pic-png-8.png',
 				});
 			} return true;
 		}).catch((error) => {
@@ -125,7 +125,7 @@ if (btnSignUp) {                                                                
 		});
 		btnLogout.classList.remove('hide');
 		setTimeout(() => {
-			window.location.href = 'https://walrusaesthetic.firebaseapp.com/user/' + userUsername;
+			window.location.href = 'http://localhost:5000/user/' + userUsername;
 		}, 2000);
 	});
 }
@@ -524,7 +524,7 @@ firebase.auth().onAuthStateChanged((user) => {
 									console.log(usernamePulled);
 									console.log(doc.data().userID);
 									console.log(doc.data().postIdFromTimeStamp);
-									const url = ('https://walrusaesthetic.firebaseapp.com/user/' + usernamePulled + '/aesthetic/'  + doc.data().aestheticName);
+									const url = ('http://localhost:5000/user/' + usernamePulled + '/aesthetic/'  + doc.data().aestheticName);
 									console.log(url);
 									db.collection('users').doc(user.uid).collection('aesthetics').doc(aestheticName).update({
 										url: url,
@@ -979,9 +979,9 @@ firebase.auth().onAuthStateChanged((user) => {
 						console.log(doc.data());
 						const profileDropDown = document.getElementById('profileDropDown');
 						profileDropDown.innerHTML = doc.data().username;
-						homeAnchor.setAttribute('href', 'https://walrusaesthetic.firebaseapp.com/user/' + doc.data().username);
+						homeAnchor.setAttribute('href', 'http://localhost:5000/user/' + doc.data().username);
 						console.log(window.location.href);
-						if (window.location.href === 'https://walrusaesthetic.firebaseapp.com/user/' + doc.data().username) {
+						if (window.location.href === 'http://localhost:5000/user/' + doc.data().username) {
 							console.log('amen');
 							followBtn.style.display = 'none';
 						}
@@ -1068,6 +1068,9 @@ firebase.auth().onAuthStateChanged((user) => {
 										console.log('before url request');
 										console.log(storageRef);
 										aestheticSaveButton.addEventListener('click', () => {
+											console.log('save');
+											const uploadAndProgress = document.getElementById('uploadAndProgress');
+											uploadAndProgress.style.display = 'none';
 											db.collection('users').doc(user.uid).collection('aesthetics').doc(aestheticNamePassed).update({
 												aestheticFileNames: firebase.firestore.FieldValue.arrayUnion(file.name),
 											});
@@ -1102,7 +1105,7 @@ firebase.auth().onAuthStateChanged((user) => {
 							db.collection('users').get().then(snapshot => {
 								snapshot.docs.forEach(doc => {
 									if (doc.data().username.toLowerCase() === followingInstance.toLowerCase()) {
-										const followingUrl = 'https://walrusaesthetic.firebaseapp.com/user/' + followingInstance;
+										const followingUrl = 'http://localhost:5000/user/' + followingInstance;
 										followingInstanceAnchor.setAttribute('href', followingUrl);
 										if (doc.data().profilePic) {
 											const followingInstanceProfilePic = document.createElement('img');
@@ -1141,7 +1144,7 @@ firebase.auth().onAuthStateChanged((user) => {
 							db.collection('users').get().then(snapshot => {
 								snapshot.docs.forEach(doc => {
 									if (doc.data().username.toLowerCase() === followerInstance.toLowerCase()) {
-										const followerUrl = 'https://walrusaesthetic.firebaseapp.com/user/' + followerInstance;
+										const followerUrl = 'http://localhost:5000/user/' + followerInstance;
 										followerInstanceAnchor.setAttribute('href', followerUrl);
 										if (doc.data().profilePic) {
 											const followerInstanceProfilePic = document.createElement('img');
@@ -1214,8 +1217,8 @@ firebase.auth().onAuthStateChanged((user) => {
 		// todo use an equation to read the size of the monitor the person has and then read images and then resize the images for their monitor
 		if (usernameHeader) { // if the username header on the profile page exists
 			// todo make followers and following update in realtime
-			const followingUrl = 'https://walrusaesthetic.firebaseapp.com/user/' + usernameHeader.innerHTML.toLowerCase() + '/following';
-			const followersUrl = 'https://walrusaesthetic.firebaseapp.com/user/' + usernameHeader.innerHTML.toLowerCase() + '/followers';
+			const followingUrl = 'http://localhost:5000/user/' + usernameHeader.innerHTML.toLowerCase() + '/following';
+			const followersUrl = 'http://localhost:5000/user/' + usernameHeader.innerHTML.toLowerCase() + '/followers';
 			followingAnchor.setAttribute('href', followingUrl);
 			followersAnchor.setAttribute('href', followersUrl);
 			checkIfFollowing();
@@ -1254,7 +1257,7 @@ firebase.auth().onAuthStateChanged((user) => {
 		auth.signOut();
 		console.log('Signed Out');
 		setTimeout(() => {
-			window.location.href = 'https://walrusaesthetic.firebaseapp.com/'; // + username;  //redirect to the signed in user's profile
+			window.location.href = 'http://localhost:5000/'; // + username;  //redirect to the signed in user's profile
 		}, 2000); // will call the function after 2 secs. Temporary
 		});
 	}

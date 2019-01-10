@@ -25,14 +25,10 @@ app.use(express.static('../public'));
 
 // const jsonBodyParser = bodyParser.json()
 
-app.get('/credentials', (req, res) =>{
-  console.log('home');
-  res.render('home');
+app.get('/', (req, res) =>{
+  res.render('index');
 });
-app.get('/yamate', (req, res) => {
-  console.log('yamate');
-  res.render('profile');
-})
+
 // app.post('/', jsonBodyParser, (req,res) =>{
   // console.log(req.body.idtoken)
   // console.log(req.body.uid);

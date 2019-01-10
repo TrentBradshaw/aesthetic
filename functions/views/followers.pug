@@ -3,7 +3,7 @@ html
     head
         title pickles
         meta(charset='utf-8')
-        link(rel='stylesheet' type='text/css' href='https://walrusaesthetic.firebaseapp.com/aesthetic.css')
+        link(rel='stylesheet' type='text/css' href='http://localhost:5000/aesthetic.css')
         script(src='https://www.gstatic.com/firebasejs/5.5.7/firebase.js')
     body
         header
@@ -11,11 +11,11 @@ html
                 div#leftHeaderNav
                     a#homeAnchor.navAnchors
                         span#home.headerElements home
-                    a#exploreAnchor.headerElements.navAnchors(href='https://walrusaesthetic.firebaseapp.com/explore')
+                    a#exploreAnchor.headerElements.navAnchors(href='http://localhost:5000/explore')
                         span#explore.headerElements explore
                 h2#aestheticHeading AESTHETIC
                 div#rightHeaderNav
-                    a#settingsAnchor.headerElements.navAnchors(href="https://walrusaesthetic.firebaseapp.com/settings")
+                    a#settingsAnchor.headerElements.navAnchors(href="http://localhost:5000/settings")
                         span#settings.headerElements settings
                     span#profileDropDown.dropbtn.navAnchors
                     a#btnLogout.btn.btn-action.hide.headerElements.navAnchors Log out
@@ -23,4 +23,4 @@ html
             h1#nameOfPersonBeingFollowed #{username}
             h2 followers
             div#followersContainer
-        script(src="https://walrusaesthetic.firebaseapp.com/main.js")
+        script(src="http://localhost:5000/main.js")
