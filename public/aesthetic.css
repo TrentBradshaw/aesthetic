@@ -67,6 +67,21 @@ body {
 }
 #likes {
     font-size: 2em;
+    margin-left: 50%;
+    margin-right: 50%;
+    width: auto;
+}
+#like {
+    width: 100%;
+    display: none;
+}
+#likesHeader {
+    text-align: center;
+}
+
+#unlike {
+    display: none;
+    width: 100%;
 }
 #uploader {
     -webkit-appearance: none;

@@ -40,6 +40,7 @@ const uploader = document.getElementById('uploader');
 const followingAnchor = document.getElementById('followingAnchor');
 const followersAnchor = document.getElementById('followersAnchor');
 const fileButton = document.getElementById('fileButton');
+
 const aestheticSpecsContainer = document.getElementById('aestheticSpecsContainer');
 const settingsForm = document.getElementById('settingsForm');
 const currentUser = document.getElementById('profileDropDown');
@@ -511,6 +512,7 @@ firebase.auth().onAuthStateChanged((user) => {
 							portrait: portraitStatus,
 							landscape: landscapeStatus,
 							nsfw: nsfwStatus,
+							likedByArray: [true],
 						});
 						userRef.update({
 							userAestheticList: aestheticsListArray,
@@ -944,6 +946,47 @@ firebase.auth().onAuthStateChanged((user) => {
 				});
 			});
 		}
+		function checkIfLiked() {
+			const owner = document.getElementById('ownerOfAesthetic');
+			const aestheticName = document.getElementById('aestheticNamePassed');
+			const likeButton = document.getElementById('like');
+			const unlikeButton = document.getElementById('unlike');
+			db.collection('users').get().then(snapshot => {
+				snapshot.docs.forEach(doc =>{
+					if (doc.data().username.toLowerCase() === owner.innerHTML.toLowerCase()) { // if page is found in database by matching the page owner's name with the document's username identifier
+						const currentuser = document.getElementById('profileDropDown');                 // the current user is the one with the corresponding name in the website header
+						if (owner.innerHTML.toLowerCase() === currentuser.innerHTML.toLowerCase()) {  // if the page owner's username is equal to the current user's username
+							likeButton.style.display = 'none';  // hide the unfollow button
+							unlikeButton.style.display = 'none';			// hide the follow button
+						}
+						if (owner.innerHTML.toLowerCase() !== currentuser.innerHTML.toLowerCase()) {  // if the profile page doesn't belong to the current user viewing the page
+							console.log('im in there dawgie for likes');
+							db.collection('users').doc(doc.data().userID).collection('aesthetics').get().then(snapshot => {
+								snapshot.docs.forEach(doc => {
+									if (doc.data().aestheticName.toLowerCase() === aestheticName.innerHTML.toLowerCase()) {
+										const arrayToCheckIfLiked = doc.data().likedByArray;
+										let i;
+										for (i = 0; i < arrayToCheckIfLiked.length; i++) {  // loop through the document that belongs to the page owner
+											console.log(arrayToCheckIfLiked[i]);
+											const currentLiker = arrayToCheckIfLiked[i];
+											if (currentLiker === currentuser.innerHTML.toLowerCase()) {  // if the currentuser is in the array of followers belonging to the profile page
+												likeButton.style.display = 'none';										 // hide the follow button, as they're already following
+												unlikeButton.style.display = 'block';									 // present the unfollow button to the user
+											} else {																	 // if they're not following the page
+												unlikeButton.style.display = 'none';									// hide the unfollow button
+												likeButton.style.display = 'block';										// present the follow button to the user
+											}
+										}
+										const likes = document.getElementById('likes');
+										likes.textContent = doc.data().likes;
+									}
+								});
+							});
+						}
+					}
+				});
+			});
+		}
 		function logTags() {
 			const divsContainer = document.getElementById('aestheticTagsContainer');
 					// populate the tags container with the tags from the post
@@ -1163,6 +1206,75 @@ firebase.auth().onAuthStateChanged((user) => {
 				});
 			});
 		}
+		function like() {
+			const likeButton = document.getElementById('like');
+			const unlikeButton = document.getElementById('unlike');
+			likeButton.addEventListener('click', () => {
+				const aestheticOwner = document.getElementById('ownerOfAesthetic');
+				const thisAesthetic = document.getElementById('aestheticNamePassed');
+				const liker = document.getElementById('profileDropDown');
+				const likes = document.getElementById('likes');
+				db.collection('users').get().then(snapshot => {
+					snapshot.docs.forEach(doc =>{
+						if (doc.data().username.toLowerCase() === aestheticOwner.innerHTML.toLowerCase()) {
+							const ownerID = doc.data().userID;
+							db.collection('users').doc(ownerID).collection('aesthetics').get().then(snapshot => { // cycle throught the aesthetics collection
+								snapshot.docs.forEach(doc => {
+									if (doc.data().aestheticName.toLowerCase() === thisAesthetic.innerHTML.toLowerCase()) {
+										db.collection('users').doc(ownerID).collection('aesthetics').doc(thisAesthetic.innerHTML).update({
+											likedByArray: firebase.firestore.FieldValue.arrayUnion(liker.innerHTML.toLowerCase()),
+											likes: doc.data().likes + 1,
+										}).then(likes.textContent = doc.data().likes);
+										unlikeButton.style.display = 'block';
+										likeButton.style.display = 'none';
+									}
+								});
+							});
+						}
+					});
+				});
+			});
+		}
+		function unlike() {
+			const unlikeButton = document.getElementById('unlike');
+			const likeButton = document.getElementById('like');
+			unlikeButton.addEventListener('click', () => {
+				const aestheticOwner = document.getElementById('ownerOfAesthetic');
+				const thisAesthetic = document.getElementById('aestheticNamePassed');
+				const unLiker = document.getElementById('profileDropDown');
+				const likes = document.getElementById('likes');
+				db.collection('users').get().then(snapshot => {
+					snapshot.docs.forEach(doc =>{
+						if (doc.data().username.toLowerCase() === aestheticOwner.innerHTML.toLowerCase()) {
+							const ownerID = doc.data().userID;
+							db.collection('users').doc(ownerID).collection('aesthetics').get().then(snapshot => { // cycle throught the aesthetics collection
+								snapshot.docs.forEach(doc => {
+									if (doc.data().aestheticName.toLowerCase() === thisAesthetic.innerHTML.toLowerCase()) {
+										const likerArrayForManipulation = doc.data().likedByArray;
+												console.log(likerArrayForManipulation);
+												let i;
+												for (i = 0; i < likerArrayForManipulation.length; i++) {
+													console.log(likerArrayForManipulation[i]);
+													if (likerArrayForManipulation[i] === unLiker.innerHTML.toLowerCase()) {
+														console.log(likerArrayForManipulation[i]);
+														likerArrayForManipulation.splice(i, 1);
+														db.collection('users').doc(ownerID).collection('aesthetics').doc(thisAesthetic.innerHTML).update({
+															likedByArray: likerArrayForManipulation,
+															likes: doc.data().likes - 1,
+														});
+													}
+												}
+										likeButton.style.display = 'block';
+										unlikeButton.style.display = 'none';
+										likes.textContent = doc.data().likes;
+									}
+								});
+							});
+						}
+					});
+				});
+			});
+		}
 
 		// firebase.auth().currentUser.getIdToken(/* forceRefresh */ true).then(function(idToken) {
 			// Send token to your backend via HTTPS
@@ -1208,7 +1320,14 @@ firebase.auth().onAuthStateChanged((user) => {
 			// listen for file selection
 			document.addEventListener('DOMContentLoaded', function(event) {
 				console.log('DOM fully loaded and parsed');
-			  });
+			});
+			const likeButton = document.getElementById('like');
+			const unlikeButton = document.getElementById('unlike');
+			const aestheticOwner = document.getElementById('ownerOfAesthetic');
+			const thisAesthetic = document.getElementById('aestheticNamePassed');
+			checkIfLiked();
+			like();
+			unlike();
 			logTags();
 			fileUploadHandler();
 			listenForEdit();
@@ -1229,11 +1348,14 @@ firebase.auth().onAuthStateChanged((user) => {
 			if (unfollowButton) {
 				unfollow();
 			}
+
 			loadProfileAestheticPreview();
 			db.collection('users').get().then(snapshot => {
 				snapshot.docs.forEach(doc =>{
 					if (doc.data().username.toLowerCase() === usernameHeader.innerHTML.toLowerCase()) {
+						const numberOfAesthetics = document.getElementById('aestheticNumb');
 						profilePic.setAttribute('src', doc.data().profilePic);
+						numberOfAesthetics.innerHTML = doc.data().userAestheticList.length - 1;
 					}
 				});
 			});
