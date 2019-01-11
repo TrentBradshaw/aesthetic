@@ -1367,6 +1367,9 @@ firebase.auth().onAuthStateChanged((user) => {
 			const unlikeButton = document.getElementById('unlike');
 			const aestheticOwner = document.getElementById('ownerOfAesthetic');
 			const thisAesthetic = document.getElementById('aestheticNamePassed');
+			const profileAnchor = document.getElementById('profileAnchor');
+			const url = 'https://walrusaesthetic.firebaseapp.com/user/' + aestheticOwner.innerHTML;
+			profileAnchor.setAttribute('href', url);
 			checkIfLiked();
 			like();
 			unlike();

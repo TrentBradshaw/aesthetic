@@ -2,7 +2,7 @@ doctype html
 html(lang='en')
     head
         meta(charset='utf-8')
-        link(rel ='stylesheet' type = 'text/css' href = 'http://localhost:5000/profile.css')
+        link(rel ='stylesheet' type = 'text/css' href = 'https://walrusaesthetic.firebaseapp.com/profile.css')
         
         script(src="https://www.gstatic.com/firebasejs/5.5.7/firebase.js")
     body#profileBody
@@ -11,11 +11,11 @@ html(lang='en')
                 div#leftHeaderNav
                     a#homeAnchor.navAnchors
                         span#home.headerElements home
-                    a#exploreAnchor.headerElements.navAnchors(href='http://localhost:5000/explore')
+                    a#exploreAnchor.headerElements.navAnchors(href='https://walrusaesthetic.firebaseapp.com/explore')
                         span#explore.headerElements explore
                 h2#aestheticHeading AESTHETIC
                 div#rightHeaderNav
-                    a#settingsAnchor.headerElements.navAnchors(href="http://localhost:5000/settings")
+                    a#settingsAnchor.headerElements.navAnchors(href="https://walrusaesthetic.firebaseapp.com/settings")
                         span#settings.headerElements settings
                     span#profileDropDown.dropbtn.navAnchors
                     a#btnLogout.btn.btn-action.hide.headerElements.navAnchors Log out
@@ -55,4 +55,4 @@ html(lang='en')
         div#aestheticContainer
             div#createAesthetic
                 button#aestheticImg Create Aesthetic
-        script(src="http://localhost:5000/main.js")
+        script(src="https://walrusaesthetic.firebaseapp.com/main.js")

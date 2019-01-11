@@ -1,6 +1,4 @@
-* {
-    border: 1px solid red;
-}
+
 #aestheticBody {
     background: #10171e;
 }
@@ -20,6 +18,9 @@ a {
 .headerElements {
     font-size: 1em; /*switch to 2em after fixing */
     font-variant-caps: all-small-caps;
+}
+#profileAnchor {
+    margin: auto;
 }
 
 #leftHeaderNav{
@@ -42,11 +43,22 @@ a {
     margin-top: 5px;
     margin-bottom: 25px;
 }
-
+#aestheticInteractionButtonDiv {
+    width: 33%;
+}
 #rightHeaderNav{
     width: 30%;
     display: flex;
     justify-content: space-around;
+}
+#share {
+    width: 33%;
+}
+#editButton {
+    width: 33%;
+}
+#deleteButton {
+    width: 33%;
 }
 
 #aestheticHeading{
@@ -86,7 +98,7 @@ body {
 #uploader {
     -webkit-appearance: none;
     appearance: none;
-    width: 50%;
+    width: 100%;
 }
 
 h1 {
@@ -97,11 +109,20 @@ h1 {
 body {
     margin: 0;
     font-family: Arial, Helvetica, sans-serif;
-  }
+}
+#aestheticSaveButton {
+    width: 30%;
+    margin-left: 35%;
+    margin-right: 35%;
+    margin-top: 5%;
+    background: aliceblue;
+}
 
 
 #ownerOfAesthetic {
     margin: auto;
+    text-decoration: none;
+    color: black;
 }
 #pageCredits {
     display: flex;

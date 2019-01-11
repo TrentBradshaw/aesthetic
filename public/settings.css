@@ -1,18 +1,30 @@
+* {
+    font-family: Arial, Helvetica, sans-serif;
+}
 .socialMediaIcons{
     height: 40px;
     display: block;
 }
-
+#twitterURLInput {
+    margin-top: 10%;
+}
+#twitterIcon {
+    margin-top: 10%;
+}
 .settingsContainer {
     margin-top: 5%;
     margin-right: 30%;
     margin-left: 30%;
     display: flex;
 }
+#nsfwCheckbox {
+    margin: auto;
+}
 
 #settingsForm {
     margin: 0% 30%;
     background: white;
+    border-radius: 5px;
 }
 
 #settingsBody {
