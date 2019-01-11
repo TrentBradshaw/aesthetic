@@ -129,10 +129,9 @@ if (signUpButton) {                                                             
 			const errorMessage = error.message;
 			// console.log(errorMessage, errorCode)
 		});
-		btnLogout.classList.remove('hide');
 		setTimeout(() => {
 			window.location.href = 'https://walrusaesthetic.firebaseapp.com/user/' + userUsername;
-		}, 2000);
+		}, 500);
 	});
 }
 // this function fires when a user is creating a new aesthetic and grabs all of the information about it
