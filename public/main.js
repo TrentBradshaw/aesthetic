@@ -81,14 +81,14 @@ if (loginButton) {                                                              
     	const email = loginEmail.value;
     	const password = loginPassword.value;
     	// Sign in
-    	const promise = auth.signInWithEmailAndPassword(email, password);         // sign the user in witht he provided
-		promise.catch(e => console.log(e.message));
+    	auth.signInWithEmailAndPassword(email, password).then((firebaseUser)=>{        // sign the user in witht he provided
 		if (firebaseUser) {
-			const currentUserLoggedIn = db.collection('users').doc(firebaseUser.user.uid).username;
-			setTimeout(() => {
-				window.location.href = 'https://walrusaesthetic.firebaseapp.com/user/'  + currentUserLoggedIn;  // redirect to the signed in user's profile
-			}, 500); // will call the function after .5 secs. Temporary
-		}
+				const currentUserLoggedIn = db.collection('users').doc(firebaseUser.user.uid).username;
+				setTimeout(() => {
+					window.location.href = 'https://acethetic.co/user/'  + currentUserLoggedIn;  // redirect to the signed in user's profile
+				}, 500); // will call the function after .5 secs. Temporary
+			}
+		}).catch((e) => { console.log(e.message); });
 	});
 }
 
@@ -121,7 +121,7 @@ if (signUpButton) {                                                             
 					redditUrl: 'Please Enter our URL',
 					youtubeUrl: 'Please Enter our URL',
 					facebookUrl: 'Please Enter our URL',
-					profilePic: 'https://walrusaesthetic.firebaseapp.com/default-profile-pic-png-8.png',
+					profilePic: 'https://acethetic.co/default-profile-pic-png-8.png',
 				});
 			} return true;
 		}).catch((error) => {
@@ -130,7 +130,7 @@ if (signUpButton) {                                                             
 			// console.log(errorMessage, errorCode)
 		});
 		setTimeout(() => {
-			window.location.href = 'https://walrusaesthetic.firebaseapp.com/user/' + userUsername;
+			window.location.href = 'https://acethetic.co/user/' + userUsername;
 		}, 500);
 	});
 }
@@ -531,7 +531,7 @@ firebase.auth().onAuthStateChanged((user) => {
 									console.log(usernamePulled);
 									console.log(doc.data().userID);
 									console.log(doc.data().postIdFromTimeStamp);
-									const url = ('https://walrusaesthetic.firebaseapp.com/user/' + usernamePulled + '/aesthetic/'  + doc.data().aestheticName);
+									const url = ('https://acethetic.co/user/' + usernamePulled + '/aesthetic/'  + doc.data().aestheticName);
 									console.log(url);
 									db.collection('users').doc(user.uid).collection('aesthetics').doc(aestheticName).update({
 										url: url,
@@ -856,7 +856,7 @@ firebase.auth().onAuthStateChanged((user) => {
 																		});
 																		db.collection('users').doc(userID).collection('aesthetics').doc(aestheticLookup).delete();
 																		setTimeout(() => {
-																			window.location.href = 'https://walrusaesthetic.firebaseapp.com/user/' + currentUser.innerHTML;  // redirect to the signed in user's profile
+																			window.location.href = 'https://acethetic.co/user/' + currentUser.innerHTML;  // redirect to the signed in user's profile
 																		}, 500); // will call the function after 2 secs. Temporary
 																	}
 																}
@@ -1063,9 +1063,9 @@ firebase.auth().onAuthStateChanged((user) => {
 						console.log(doc.data());
 						const profileDropDown = document.getElementById('profileDropDown');
 						profileDropDown.innerHTML = doc.data().username;
-						homeAnchor.setAttribute('href', 'https://walrusaesthetic.firebaseapp.com/user/' + doc.data().username);
+						homeAnchor.setAttribute('href', 'https://acethetic.co/user/' + doc.data().username);
 						console.log(window.location.href);
-						if (window.location.href === 'https://walrusaesthetic.firebaseapp.com/user/' + doc.data().username) {
+						if (window.location.href === 'https://acethetic.co/user/' + doc.data().username) {
 							console.log('amen');
 							followBtn.style.display = 'none';
 						}
@@ -1189,7 +1189,7 @@ firebase.auth().onAuthStateChanged((user) => {
 							db.collection('users').get().then(snapshot => {
 								snapshot.docs.forEach(doc => {
 									if (doc.data().username.toLowerCase() === followingInstance.toLowerCase()) {
-										const followingUrl = 'https://walrusaesthetic.firebaseapp.com/user/' + followingInstance;
+										const followingUrl = 'https://acethetic.co/user/' + followingInstance;
 										followingInstanceAnchor.setAttribute('href', followingUrl);
 										if (doc.data().profilePic) {
 											const followingInstanceProfilePic = document.createElement('img');
@@ -1228,7 +1228,7 @@ firebase.auth().onAuthStateChanged((user) => {
 							db.collection('users').get().then(snapshot => {
 								snapshot.docs.forEach(doc => {
 									if (doc.data().username.toLowerCase() === followerInstance.toLowerCase()) {
-										const followerUrl = 'https://walrusaesthetic.firebaseapp.com/user/' + followerInstance;
+										const followerUrl = 'https://acethetic.co/user/' + followerInstance;
 										followerInstanceAnchor.setAttribute('href', followerUrl);
 										if (doc.data().profilePic) {
 											const followerInstanceProfilePic = document.createElement('img');
@@ -1368,7 +1368,7 @@ firebase.auth().onAuthStateChanged((user) => {
 			const aestheticOwner = document.getElementById('ownerOfAesthetic');
 			const thisAesthetic = document.getElementById('aestheticNamePassed');
 			const profileAnchor = document.getElementById('profileAnchor');
-			const url = 'https://walrusaesthetic.firebaseapp.com/user/' + aestheticOwner.innerHTML;
+			const url = 'https://acethetic.co/user/' + aestheticOwner.innerHTML;
 			profileAnchor.setAttribute('href', url);
 			checkIfLiked();
 			like();
@@ -1381,8 +1381,8 @@ firebase.auth().onAuthStateChanged((user) => {
 		// todo use an equation to read the size of the monitor the person has and then read images and then resize the images for their monitor
 		if (usernameHeader) { // if the username header on the profile page exists
 			// todo make followers and following update in realtime
-			const followingUrl = 'https://walrusaesthetic.firebaseapp.com/user/' + usernameHeader.innerHTML.toLowerCase() + '/following';
-			const followersUrl = 'https://walrusaesthetic.firebaseapp.com/user/' + usernameHeader.innerHTML.toLowerCase() + '/followers';
+			const followingUrl = 'https://acethetic.co/user/' + usernameHeader.innerHTML.toLowerCase() + '/following';
+			const followersUrl = 'https://acethetic.co/user/' + usernameHeader.innerHTML.toLowerCase() + '/followers';
 			followingAnchor.setAttribute('href', followingUrl);
 			followersAnchor.setAttribute('href', followersUrl);
 			checkIfFollowing();
@@ -1424,7 +1424,7 @@ firebase.auth().onAuthStateChanged((user) => {
 		auth.signOut();
 		console.log('Signed Out');
 		setTimeout(() => {
-			window.location.href = 'https://walrusaesthetic.firebaseapp.com/'; // + username;  //redirect to the signed in user's profile
+			window.location.href = 'https://acethetic.co'; // + username;  //redirect to the signed in user's profile
 		}, 500); // will call the function after 2 secs. Temporary
 		});
 	}
