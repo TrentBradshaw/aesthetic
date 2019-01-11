@@ -64,37 +64,42 @@ const searchButton = document.getElementById('searchButton');
 const exploreContainer = document.getElementById('exploreContainer');
 
 // Get elements for authentication
-const txtEmail = document.getElementById('txtEmail');
-const txtPassword = document.getElementById('txtPassword');
-const btnLogin = document.getElementById('btnLogin');
-const btnSignUp = document.getElementById('btnSignUp');
+const signUpEmail = document.getElementById('signUpTextEmail');
+const signUpPassword = document.getElementById('signUpTextPassword');
+const loginButton = document.getElementById('loginButton');
+const signUpButton = document.getElementById('signUpButton');
 const btnLogout = document.getElementById('btnLogout');
-const username = document.getElementById('username');
+const signUpUsername = document.getElementById('signUpUsername');
+const loginEmail = document.getElementById('loginTextEmail');
+const loginPassword = document.getElementById('loginTextPassword');
 
 const profileHeader = document.getElementById('profileHeader');
 // todo redirect the user to their profile using a database lookup to get their username and redirect to site/user/:username
 // LOGIN EVENT
-if (btnLogin) {                                                                   // if login button exists on the page
-	btnLogin.addEventListener('click', e => {									 // listen for a click
-    	const email = txtEmail.value;
-    	const password = txtPassword.value;
+if (loginButton) {                                                                   // if login button exists on the page
+	loginButton.addEventListener('click', e => {									 // listen for a click
+    	const email = loginEmail.value;
+    	const password = loginPassword.value;
     	// Sign in
     	const promise = auth.signInWithEmailAndPassword(email, password);         // sign the user in witht he provided
 		promise.catch(e => console.log(e.message));
-		setTimeout(() => {
-			window.location.href = 'https://walrusaesthetic.firebaseapp.com/'; // + username;  //redirect to the signed in user's profile
-		}, 2000); // will call the function after 2 secs. Temporary
-    });
+		if (firebaseUser) {
+			const currentUserLoggedIn = db.collection('users').doc(firebaseUser.user.uid).username;
+			setTimeout(() => {
+				window.location.href = 'https://walrusaesthetic.firebaseapp.com/user/'  + currentUserLoggedIn;  // redirect to the signed in user's profile
+			}, 500); // will call the function after .5 secs. Temporary
+		}
+	});
 }
 
 // SIGN UP EVENT
-if (btnSignUp) {                                                                  // if sign up button exists on the page
+if (signUpButton) {                                                                  // if sign up button exists on the page
 	// add signup event
-	btnSignUp.addEventListener('click', e => {                                    // listen for clicks on the sign up button
+	signUpButton.addEventListener('click', e => {                                    // listen for clicks on the sign up button
 		e.preventDefault();														  // prevent the default behavior
-		const email = txtEmail.value;
-		const password = txtPassword.value;
-		const userUsername = username.value;
+		const email = signUpEmail.value;
+		const password = signUpUsername.value;
+		const userUsername = signUpUsername.value;
 		// Sign up
   		auth.createUserWithEmailAndPassword(email, password).then((firebaseUser)=>{   // create a new user with the email and password provided
 			// if successful

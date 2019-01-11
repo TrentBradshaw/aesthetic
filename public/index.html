@@ -12,18 +12,29 @@
     
     <body>
         <header>
-            <H1>AESTHETIC</H1>
-        </header>
-        <div class = 'container'>
-            <div id = 'inputContainer'>
-                <input id = 'username' placeholder='username' class = 'authInputFields'>
-                <input id = 'txtEmail' type='email' placeholder='Email' class="authInputFields">
-                <input id = 'txtPassword' type="password" placeholder='password'class='authInputFields'>
+            <div id = 'homeHeader'>
+                <H1 id = 'aestheticHeading'>AESTHETIC</H1>
             </div>
-            <div id = 'authButtonsContainer'>
-                <button id='btnLogin' class='btn btn-action authButtons'>Log In</button>
-                <button id = 'btnSignUp'class = 'btn btn-secondary authButtons'>Sign Up</button>
-                <button id = 'btnLogout' class = 'btn btn-action hide authButtons'>Log Out</button>
+        </header>
+        <div id = 'authenticationContainer'>
+            <div id = 'signUpContainer'>
+                <div id = 'signUpInputContainer'>
+                    <input id = 'signUpUsername' placeholder='username' class = 'authInputFields'>
+                    <input id = 'signUptextEmail' type='email' placeholder='email' class="authInputFields">
+                    <input id = 'signUptextPassword' type="password" placeholder='password'class='authInputFields'>
+                </div>
+                <div id = 'signUpAuthButtonsContainer'>
+                    <button id = 'signUpButton'class = 'btn btn-secondary authButtons'>Sign Up</button>
+                </div>
+            </div>
+            <div id = 'loginContainer'>
+                <div id = 'loginInputContainer'>
+                    <input id = 'loginTextEmail' type='email' placeholder='email' class="authInputFields">
+                    <input id = 'loginTextPassword' type="password" placeholder='password'class='authInputFields'>
+                </div>
+                <div id = 'loginAuthButtonsContainer'>
+                    <button id = 'loginButton' class='btn btn-action authButtons'>Log In</button>
+                </div>
             </div>
         </div>
         <script src="main.js"></script>
