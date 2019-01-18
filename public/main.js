@@ -6,12 +6,12 @@
 
 // Connect to firebase storage, firebase database, and firebase authentication
 const config = {
-  apiKey: 'AIzaSyCjZZJ2rNAzKgkZ9ioE0UeufR3W3RSDN1Y',
-  authDomain: 'walrusaesthetic.firebaseapp.com',
-  databaseURL: 'https://walrusaesthetic.firebaseio.com',
-  projectId: 'walrusaesthetic',
-  storageBucket: 'walrusaesthetic.appspot.com',
-  messagingSenderId: '264200815299',
+  apiKey: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+  authDomain: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+  databaseURL: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+  projectId: 'xxxxxxxxxxxxxxxxxxxxxxxx',
+  storageBucket: 'xxxxxxxxxxxxxxxxxxxxxxxx',
+  messagingSenderId: 'xxxxxxxxxxxxxxxx',
 };
 // eslint-disable-next-line no-undef
 firebase.initializeApp(config);                                               // initialize the configurations
